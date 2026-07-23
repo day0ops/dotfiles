@@ -1,0 +1,32 @@
+{
+  "mcpServers": {
+    "serena": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena",
+        "start-mcp-server",
+        "--context",
+        "ide-assistant"
+      ],
+      "tools": []
+    },
+    "context7": {
+      "command": "deno",
+      "args": [
+        "run",
+        "-A",
+        "npm:@upstash/context7-mcp",
+        "--api-key",
+        "${CONTEXT7_API_KEY}"
+      ],
+      "tools": []
+    },
+    "playwright": {
+      "command": "deno",
+      "args": ["run", "-A", "npm:@playwright/mcp@latest"],
+      "tools": []
+    }
+  }
+}

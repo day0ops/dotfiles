@@ -1,0 +1,56 @@
+# NOTE: this config likely conflicts with aerospace
+
+# start/stop yabai, tiling window manager
+alt + shift - q : yabai --stop-service
+alt + shift - s : yabai --start-service
+
+# rotate layout clockwise
+alt + shift - r : yabai -m space --rotate 270
+
+# flip along y-axis
+alt + shift - y : yabai -m space --mirror y-axis
+
+# flip along x-axis
+alt + shift - x : yabai -m space --mirror x-axis
+
+# balance out a tree of windows (resize or occupy the same area)
+alt + shift - b : yabai -m space --balance
+
+# toggle window float
+alt + shift - f : yabai -m window --toggle float --grid 4:4:1:1:2:2
+
+# maximize a window
+alt + shift - z : yabai -m window --toggle zoom-fullscreen
+
+# focus on full-screen wezterm (see dotfiles shell script)
+lctrl - 0 : ~/.dotfiles/shell/bin/focus-wezterm
+
+# change window focus
+alt + shift - down : yabai -m window --focus south
+alt + shift - up : yabai -m window --focus north
+alt + shift - left : yabai -m window --focus west
+alt + shift - right : yabai -m window --focus east
+
+# resize tiled window
+lctrl + shift - left : yabai -m window --resize left:-50:0; \
+                       yabai -m window --resize right:-50:0
+lctrl + shift - down : yabai -m window --resize bottom:0:50; \
+                       yabai -m window --resize top:0:50
+lctrl + shift - up : yabai -m window --resize top:0:-50; \
+                     yabai -m window --resize bottom:0:-50
+lctrl + shift - right : yabai -m window --resize right:50:0; \
+                        yabai -m window --resize left:50:0
+
+# Move window to designated space
+# To enable moving windows between spaces, remove script-addition:
+# sudo yabai --uninstall-sa
+alt + shift - 1 : yabai -m window --space 1 --focus
+alt + shift - 2 : yabai -m window --space 2 --focus
+alt + shift - 3 : yabai -m window --space 3 --focus
+alt + shift - 4 : yabai -m window --space 4 --focus
+alt + shift - 5 : yabai -m window --space 5 --focus
+alt + shift - 6 : yabai -m window --space 6 --focus
+alt + shift - 7 : yabai -m window --space 7 --focus
+alt + shift - 8 : yabai -m window --space 8 --focus
+alt + shift - 9 : yabai -m window --space 9 --focus
+

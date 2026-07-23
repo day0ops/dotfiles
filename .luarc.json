@@ -1,0 +1,4 @@
+{
+  "workspace.ignoreDir": ["stow", ".pocket/tools"],
+  "diagnostics.globals": ["vim"]
+}

@@ -1,0 +1,168 @@
+{
+  // Keybinds: https://opencode.ai/docs/keybinds
+  "$schema": "https://opencode.ai/config.json",
+  "autoupdate": true,
+  "share": "disabled",
+  "provider": {
+    "google-vertex": {
+      "models": {
+        "gemini-2.5-flash": {},
+        "gemini-2.5-pro": {},
+        "gemini-3-pro-preview": {},
+        "gemini-3-flash-preview": {}
+      },
+      "options": {
+        "project": "{env:GOOGLE_CLOUD_PROJECT}",
+        "location": "{env:GOOGLE_CLOUD_LOCATION}"
+      }
+    },
+    "google-vertex-anthropic": {
+      "models": {
+        "claude-haiku-4-5@20251001": {},
+        "claude-sonnet-4-5@20250929": {},
+        "claude-opus-4-5@20251101": {}
+      },
+      "options": {
+        "project": "{env:GOOGLE_CLOUD_PROJECT}",
+        "location": "{env:GOOGLE_CLOUD_LOCATION}"
+      }
+    }
+  },
+  "mcp": {
+    "tavily": {
+      "command": ["npx", "-y", "tavily-mcp"],
+      "enabled": false,
+      "type": "local",
+      "environment": {
+        "TAVILY_API_KEY": "{env:TAVILY_API_KEY}"
+      }
+    },
+    "serena": {
+      "enabled": false, // Invalid 'tools': array too long. Expected an array with maximum length 128, but got an array with length 142 instead.
+      "type": "local",
+      "command": [
+        "uvx",
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena",
+        "start-mcp-server",
+        "--context",
+        "ide-assistant"
+      ],
+      "environment": {}
+    },
+    "githublocal": {
+      "enabled": false,
+      "type": "local",
+      // token config: https://github.com/github/github-mcp-server#token-security-best-practices
+      "command": [
+        "docker",
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "GITHUB_PERSONAL_ACCESS_TOKEN",
+        "ghcr.io/github/github-mcp-server"
+      ],
+      "environment": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "{env:GITHUB_MCP_SERVER_TOKEN}"
+      }
+    },
+    "githubremote": {
+      "enabled": false, // just use gh CLI instead
+      "type": "remote",
+      "url": "https://api.githubcopilot.com/mcp",
+      "headers": {
+        // token config: https://github.com/github/github-mcp-server#token-security-best-practices
+        "Authorization": "Bearer {env:GITHUB_MCP_SERVER_TOKEN}"
+      }
+    },
+    "context7": {
+      "enabled": true,
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@upstash/context7-mcp",
+        "--api-key",
+        "{env:CONTEXT7_API_KEY}"
+      ]
+    },
+    "playwright": {
+      "enabled": false,
+      "type": "local",
+      "command": ["deno", "run", "-A", "npm:@playwright/mcp@latest"]
+    },
+    "roadie-api-docs": {
+      "enabled": false,
+      "type": "remote",
+      "url": "https://api.roadie.so/api/mcp/v1/api-docs-query",
+      "headers": {
+        "Authorization": "Bearer {env:ROADIE_API_TOKEN}"
+      }
+    },
+    "roadie-backend-config": {
+      "enabled": false,
+      "type": "remote",
+      "url": "https://api.roadie.so/api/mcp/v1/backend-config",
+      "headers": {
+        "Authorization": "Bearer {env:ROADIE_API_TOKEN}"
+      }
+    },
+    "roadie-catalog-decorators": {
+      "enabled": false,
+      "type": "remote",
+      "url": "https://api.roadie.so/api/mcp/v1/catalog-decorators",
+      "headers": {
+        "Authorization": "Bearer {env:ROADIE_API_TOKEN}"
+      }
+    },
+    "roadie-scaffolder": {
+      "enabled": false,
+      "type": "remote",
+      "url": "https://api.roadie.so/api/mcp/v1/scaffolder-use",
+      "headers": {
+        "Authorization": "Bearer {env:ROADIE_API_TOKEN}"
+      }
+    },
+    "roadie-catalog": {
+      "enabled": false,
+      "type": "remote",
+      "url": "https://api.roadie.so/api/mcp/v1/rich-catalog-entity",
+      "headers": {
+        "Authorization": "Bearer {env:ROADIE_API_TOKEN}"
+      }
+    },
+    "mcp-atlassian": {
+      "enabled": false,
+      "type": "local",
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "-i",
+        "-e",
+        "CONFLUENCE_URL",
+        "-e",
+        "CONFLUENCE_USERNAME",
+        "-e",
+        "CONFLUENCE_API_TOKEN",
+        "-e",
+        "JIRA_URL",
+        "-e",
+        "JIRA_USERNAME",
+        "-e",
+        "JIRA_API_TOKEN",
+        "ghcr.io/sooperset/mcp-atlassian:latest"
+      ],
+      "environment": {
+        "CONFLUENCE_URL": "{env:CONFLUENCE_URL}",
+        "CONFLUENCE_USERNAME": "{env:CONFLUENCE_USERNAME}",
+        "CONFLUENCE_API_TOKEN": "{env:CONFLUENCE_API_TOKEN}",
+        "JIRA_URL": "{env:JIRA_URL}",
+        "JIRA_USERNAME": "{env:JIRA_USERNAME}",
+        "JIRA_API_TOKEN": "{env:JIRA_API_TOKEN}"
+      }
+    }
+  }
+}

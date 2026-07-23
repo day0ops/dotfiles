@@ -1,0 +1,98 @@
+#### OS Generated ####
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+#### IntelliJ IDEA ####
+#######################
+.idea
+*.iws
+*.iml
+*.ipr
+
+#### VS Code ####
+#################
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+.history/
+
+#### Editing ####
+#################
+/.antigravitycli/
+/.claude/settings.local.json
+/.lazy.lua
+/.nvim.lua
+/.opencode/
+/.playwright-mcp/
+/.serena/
+/conductor/
+
+#### Environments ####
+######################
+.direnv/
+/.envrc
+/.mise.local.toml
+/.mise.toml
+/.nix-devshell/
+/.pkgx.yaml
+/.pkgx.yml
+
+#### Node ####
+##############
+node_modules/
+
+# byte-compiled / optimized / dll files
+#######################################
+__pycache__/
+*.py[cod]
+*$py.class
+
+#### go ####
+############
+coverage.out
+
+#### c extensions ####
+######################
+*.so
+
+#### python distribution / packaging ####
+#########################################
+*.egg
+*.egg-info/
+.Python
+.coverage*
+.eggs/
+.installed.cfg
+.nox/
+.pytest_cache/
+.tox/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+htmlcov/
+lib64/
+parts/
+sdist/
+share/python-wheels/
+var/
+wheels/
+
+#### zig ####
+#############
+.zig-cache
+
+#### Misc ####
+#############
+/TODO.md
+/PLAN.md

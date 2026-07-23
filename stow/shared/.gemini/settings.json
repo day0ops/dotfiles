@@ -1,0 +1,39 @@
+{
+  "ui": {
+    "theme": "Default Light"
+  },
+  "general": {
+    "previewFeatures": true,
+    "enableNotifications": true
+  },
+  "telemetry": {
+    "enabled": false
+  },
+  "mcpServers": {
+    "serena": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena",
+        "start-mcp-server",
+        "--context",
+        "ide-assistant"
+      ],
+      "env": {}
+    },
+    "playwright": {
+      "command": "deno",
+      "args": [
+        "run",
+        "-A",
+        "npm:@playwright/mcp@latest"
+      ]
+    }
+  },
+  "security": {
+    "auth": {
+      "selectedType": "oauth-personal"
+    }
+  }
+}

@@ -1,0 +1,68 @@
+[user]
+	name = Kasun Talwatta
+	email = kasun.talwatta@gmail.com
+
+[core]
+	excludesfile = ~/.gitignore_global
+	editor = nvim
+
+[pull]
+	ff = only
+[merge]
+	tool = nvim
+[mergetool "nvim"]
+	cmd = nvim -d $LOCAL $REMOTE $BASE $MERGED
+[mergetool]
+	prompt = false
+[diff]
+	tool = nvim_difftool
+[difftool "nvim"]
+	cmd = nvim -d $LOCAL $REMOTE
+[difftool "nvim_difftool"]
+	cmd = nvim -c \"packadd nvim.difftool\" -d \"$LOCAL\" \"$REMOTE\"
+[difftool]
+	prompt = false
+[init]
+	defaultBranch = main
+[rebase]
+	autostash = true
+[commit]
+	template = ~/.gitcommit
+[push]
+	autoSetupRemote = true
+
+# Large file support via git-lfs
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+
+[gpg]
+	program = gpg
+
+# GitHub https authentication
+# Credential helpers are cumulative, not override: this host-scoped helper does
+# NOT replace the generic `osxkeychain` helper inherited from the system
+# gitconfig, it's appended after it — and osxkeychain, tried first, would answer
+# with a cached (possibly stale) token. The empty `helper =` resets the list so
+# gh is the sole credential source for github.com. Other hosts (e.g.
+# codeberg.org) don't match this block and still use osxkeychain.
+[credential "https://github.com"]
+	helper =
+	helper = !gh auth git-credential
+[credential "https://gist.github.com"]
+	helper =
+	helper = !gh auth git-credential
+
+# Optional host-level SSH auth
+[include]
+	path = ~/.gitconfig_ssh
+
+# Optional commit signing
+[include]
+	path = ~/.gitconfig_signing
+
+# Always keep gitconfig for work at bottom of this file
+[includeIf "gitdir:~/Projects/work/**/.git"]
+	path = ~/.gitconfig_work

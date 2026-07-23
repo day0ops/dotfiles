@@ -1,0 +1,39 @@
+Brewfile.lock.json
+automatic_backups
+.env
+.nvim.lua
+
+# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# Crash log files
+crash.log
+
+# Exclude all .tfvars files, which might contain sensitive data, such as
+# password, private keys, and other secrets. These should not be part of version
+# control as they are data points which are potentially sensitive and subject
+# to change depending on the environment.
+*.tfvars
+
+# Ignore override files as they are usually used to override resources locally and so
+# are not checked in
+override.tf
+*_override.tf
+
+# minimal.lua, repro.lua
+nvim_issue
+.repro
+
+# Work related, e.g. zsh-completion
+/work
+
+# Applications storing files ending up in stow/
+stow/shared/.config/zed/prompts
+stow/Darwin/Library/Application Support/lazygit/state.yml
+
+# Runtime symlink created by stow/shared/.claude-web/web-setup.sh on the web sandbox
+/.claude

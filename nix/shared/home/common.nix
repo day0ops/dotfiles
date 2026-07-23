@@ -1,0 +1,265 @@
+# Shared home-manager configuration that gets imported by user-specific configs
+{
+  config,
+  lib,
+  pkgs,
+  inputs,
+  ...
+}:
+let
+  stable = inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+  unstable = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+
+  # Stow package dir matching `uname -s`; Nix knows the platform at build time.
+  stowPlatform = if pkgs.stdenv.hostPlatform.isDarwin then "Darwin" else "Linux";
+in
+{
+  imports = [
+    ./package-tools.nix
+  ];
+
+  config = {
+
+    # LLM agent CLIs from the numtide/llm-agents.nix flake input (mergeable
+    # across config levels; platform/host configs can add more)
+    packageTools.llmAgents = [
+      "claude-code"
+      "codex"
+      "gemini-cli"
+      "opencode"
+    ];
+
+    # npm packages (mergeable across config levels)
+    packageTools.npmPackages = [ ];
+
+    # Python CLI tools (mergeable across config levels)
+    packageTools.uvTools = [
+      {
+        package = "sqlit-tui";
+        inject = [ "google-cloud-bigquery" ];
+      }
+    ];
+
+    home.activation.handleDotfiles = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      DOTFILES_PATH=""
+
+      # Check if dotfiles are already cloned locally
+      if [ -d "$HOME/.dotfiles/.git" ]; then
+        echo "Using existing dotfiles at ~/.dotfiles"
+        DOTFILES_PATH="$HOME/.dotfiles"
+
+        # Initialize git submodules for local clone
+        echo "Initializing any git submodules..."
+        cd "$DOTFILES_PATH"
+        if ! $DRY_RUN_CMD ${pkgs.git}/bin/git submodule update --init --recursive; then
+          echo "Warning: Failed to initialize git submodules"
+          exit 1
+        fi
+        echo "Git submodules initialized"
+      else
+        echo "Using dotfiles from flake input"
+        DOTFILES_PATH="${inputs.dotfiles}"
+      fi
+
+      # Symlink dotfiles with GNU Stow. --adopt absorbs any real file that has
+      # replaced a managed symlink into the repo (shows up in `git diff`);
+      # --no-folding links individual files so other tools can write siblings
+      # into the same dir (e.g. ~/.config).
+      echo "Stowing dotfiles from $DOTFILES_PATH..."
+      if ! $DRY_RUN_CMD ${pkgs.stow}/bin/stow \
+        --dir="$DOTFILES_PATH/stow" --target="$HOME" \
+        --restow --no-folding --adopt \
+        shared ${stowPlatform}; then
+        echo "Warning: Stow installation failed"
+        exit 1
+      fi
+    '';
+
+    # Common packages available on all platforms
+    home.packages = with pkgs; [
+      # ========================================================================
+      # Core System & Shell Tools
+      # ========================================================================
+      atuin
+      bash
+      bat
+      binutils
+      bison
+      coreutils # provides e.g. timout
+      curl
+      direnv
+      dnsmasq
+      findutils
+      eza
+      fzf
+      gpg
+      htop
+      jq
+      nano
+      nix-direnv
+      ncurses
+      rsync
+      screen
+      starship
+      stow # GNU Stow for dotfile management
+      tmux
+      tree
+      watch
+      wdiff
+      wget
+      yq
+      yazi
+      unzip
+      zsh-autosuggestions
+      zsh-syntax-highlighting
+      zoxide
+
+      # ========================================================================
+      # Nixpkgs Tools
+      # ========================================================================
+      nixpkgs-track
+
+      # ========================================================================
+      # Development & Language Toolchains
+      # ========================================================================
+      # Language-specific
+      # NOTE: uv is installed per-platform (darwin.nix / linux.nix), since the
+      # stable-pin uv on NixOS is too old for the uv.toml syntax in use.
+      #
+      # NOTE: Deno installs/runs the npm-managed CLI tools. Unlike node/bun global
+      # installs (FHS shebangs, glibc-linked shims), deno shims are /bin/sh
+      # scripts exec'ing the nix store deno -> works on NixOS. Unstable for
+      # the latest Node-compat fixes (no-op on macOS, where pkgs IS unstable).
+      unstable.deno
+
+      # Generic development
+      bfs
+      devenv
+      dust
+      fd
+      gnumake
+      mise
+      ripgrep
+      ugrep
+
+      # ========================================================================
+      # Git & Version Control
+      # ========================================================================
+      gh
+      git
+      git-lfs
+      jujutsu
+      lazygit
+
+      # ========================================================================
+      # Containers
+      # ========================================================================
+      docker-client # Docker CLI only (no engine); routes to whatever DOCKER_HOST points at
+      lazydocker
+      vfkit
+
+      # ========================================================================
+      # Network, API & Database
+      # ========================================================================
+      grpcurl
+      grpcui
+      hey
+      httpie
+      iftop
+      k6
+      netcat
+      postgresql
+      vegeta
+
+      # ========================================================================
+      # Media & Utilities
+      # ========================================================================
+      asciinema
+      chafa
+      exiftool
+      gnused # GNU tools (for macOS compatibility)
+      imagemagick
+      llama-cpp
+      presenterm
+      slides
+
+      # ========================================================================
+      # Build/Dev Tools
+      # ========================================================================
+      ansible
+      gradle
+      maven
+      opentofu
+      pnpm
+      temurin
+      temurin@8
+      temurin@11
+
+      # ========================================================================
+      # Version Managers
+      # ========================================================================
+      asdf
+      bazelisk
+
+      # ========================================================================
+      # Infrastructure & Cloud
+      # ========================================================================
+      argocd
+      awscli
+      aws-iam-authenticator
+      azure-cli
+      eksctl
+      google-cloud-sdk
+      helm
+      k9s
+      kind
+      krew
+      kubectl
+      kubectx
+      kustomize
+      minikube
+      skaffold
+      stern
+
+      # ========================================================================
+      # AI
+      # ========================================================================
+      llama-cpp
+      ollama
+      PeonPing/tap/peon-ping
+
+      # ========================================================================
+      # Terminal Support
+      # ========================================================================
+
+      # NOTE: do NOT add `ghostty.terminfo` here (or anywhere built for the Pi).
+      # Unlike kitty's, ghostty's terminfo is an output of the full ghostty
+      # build, which is uncached for nixos-raspberrypi's nixpkgs — pulling it in
+      # recompiles GTK/Ghostty from source on the Pi and crashes it.
+      #
+      # How xterm-ghostty is provided instead:
+      #   - macOS: the Ghostty app installs it.
+      #   - SSH targets (e.g. the Pi): Ghostty's client-side ssh-terminfo
+      #     integration (shell-integration-features in ghostty/config) installs
+      #     it automatically on first connect from a fresh Ghostty window.
+      #   - Manual one-off, if ever needed:
+      #       infocmp -x xterm-ghostty | ssh <host> 'tic -x -o "$HOME/.terminfo" -'
+    ];
+
+    # Tooling available only in Neovim.
+    # Written to a file so the nvim wrapper can inject them into PATH at launch,
+    # keeping these tools off the regular shell PATH. The shared toolchain (also
+    # the `dev` devshell in flake.nix) is imported so Neovim and the devshell
+    # resolve to identical store paths; the extras below are Neovim-only.
+    home.file.".config/nvim-deps-path".text = lib.makeBinPath (
+      (import ../toolchain.nix { inherit stable unstable; })
+      ++ (with unstable; [
+        cmake # Neovim's injected PATH has no stdenv cc (devshell gets it from stdenv)
+        gcc
+        lua51Packages.lua # Neovim requires Lua 5.1
+        lua51Packages.luarocks # Neovim requires Lua 5.1
+      ])
+    );
+
+  };
+}

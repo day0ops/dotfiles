@@ -1,0 +1,122 @@
+{
+  // Keybinds: https://opencode.ai/docs/keybinds
+  "$schema": "https://opencode.ai/config.json",
+  "autoupdate": true,
+  "provider": {
+    "anthropic": {
+      "models": {},
+      "options": {
+        "apiKey": "{env:ANTHROPIC_API_KEY}"
+      }
+    },
+    "google": {
+      "models": {
+        "gemini-2.5-flash": {},
+        "gemini-2.5-pro": {},
+        "gemini-3-pro-preview": {},
+        "gemini-3-flash-preview": {}
+      },
+      "options": {
+        "apiKey": "{env:GEMINI_API_KEY}"
+      }
+      // NOTE: disabled as local models doesn't work too great on M1 macOS...
+      //   "lmstudio": {
+      //     "npm": "@ai-sdk/openai-compatible",
+      //     "name": "LM Studio (local)",
+      //     "options": {
+      //       "baseURL": "http://127.0.0.1:1234/v1"
+      //     },
+      //     "models": {
+      //       "google/gemma-3n-e4b": {
+      //         "name": "Gemma 3n-e4b (local)"
+      //       },
+      //       "google/gemma-3-12b": {
+      //         "name": "Gemma 3-12b (local)"
+      //       }
+      //     }
+      //   }
+      // },
+      //
+      //   "ollama": {
+      //     // https://opencode.ai/docs/providers/#ollama
+      //     "npm": "@ai-sdk/openai-compatible",
+      //     "options": {
+      //       "baseURL": "http://localhost:11434/v1"
+      //     },
+      //     "models": {
+      //       "llama3.1:8b": {},
+      //       "qwen3:1.7b": {
+      //         // Tools causes the model to go bananas and just use them repeatedly
+      //         // "tools": true
+      //       }
+      //     }
+      //   }
+    }
+  },
+  "mcp": {
+    "tavily": {
+      "type": "local",
+      "enabled": false,
+      "command": ["npx", "-y", "tavily-mcp"],
+      "environment": {
+        "TAVILY_API_KEY": "{env:TAVILY_API_KEY}"
+      }
+    },
+    "serena": {
+      "enabled": false, // Invalid 'tools': array too long. Expected an array with maximum length 128, but got an array with length 142 instead.
+      "type": "local",
+      "command": [
+        "uvx",
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena",
+        "start-mcp-server",
+        "--context",
+        "ide-assistant"
+      ],
+      "environment": {}
+    },
+    "githublocal": {
+      "enabled": false,
+      "type": "local",
+      // token config: https://github.com/github/github-mcp-server#token-security-best-practices
+      "command": [
+        "docker",
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "GITHUB_PERSONAL_ACCESS_TOKEN",
+        "ghcr.io/github/github-mcp-server"
+      ],
+      "environment": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "{env:GITHUB_MCP_SERVER_TOKEN}"
+      }
+    },
+    "githubremote": {
+      "enabled": false, // just use gh CLI instead
+      "type": "remote",
+      "url": "https://api.githubcopilot.com/mcp",
+      "headers": {
+        // token config: https://github.com/github/github-mcp-server#token-security-best-practices
+        "Authorization": "Bearer {env:GITHUB_MCP_SERVER_TOKEN}"
+      }
+    },
+    "context7": {
+      "enabled": true,
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@upstash/context7-mcp",
+        "--api-key",
+        "{env:CONTEXT7_API_KEY}"
+      ]
+    },
+    "playwright": {
+      "enabled": false,
+      "type": "local",
+      "command": ["deno", "run", "-A", "npm:@playwright/mcp@latest"]
+    }
+  }
+}

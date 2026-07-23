@@ -1,0 +1,60 @@
+name: ci
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  schedule:
+    - cron: 0 8 * * 6
+jobs:
+  test:
+    strategy:
+      matrix:
+        include:
+          - name: work
+            os: macos-latest
+            brew_cache_path: |
+              ~/Library/Caches/Homebrew
+              /usr/local/Homebrew
+              /usr/local/Cellar
+              /usr/local/Caskroom
+            nix_config: darwinConfigurations.plumbus.system
+      fail-fast: false
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: cache homebrew
+        uses: actions/cache@v4
+        with:
+          path: ${{ matrix.brew_cache_path }}
+          key: brew-${{ runner.os }}-${{ hashFiles('nix/shared/homebrew.nix') }}
+          restore-keys: |
+            brew-${{ runner.os }}-
+        if: matrix.brew_cache_path != ''
+
+      - name: install nix
+        uses: DeterminateSystems/nix-installer-action@main
+
+      - name: setup cachix
+        uses: cachix/cachix-action@v15
+        with:
+          name: nix-community
+          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+
+      - name: test nix flake check
+        run: nix flake check --show-trace --accept-flake-config
+
+      # Build Darwin configurations on native macos runners (same architecture)
+      - name: test nix build ${{ matrix.name }}
+        run: |
+          nix build .#${{ matrix.nix_config }} --show-trace --accept-flake-config --dry-run
+        if: matrix.name == 'zap' || matrix.name == 'plumbus'
+
+      # Build ARM configuration on native ARM64 runner (much faster than emulation)
+      - name: test nix build ${{ matrix.name }}
+        run: |
+          nix build .#${{ matrix.nix_config }} --show-trace --accept-flake-config --dry-run
+        if: matrix.name == 'rpi5-homelab'
+
