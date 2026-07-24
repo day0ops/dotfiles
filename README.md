@@ -1,6 +1,4 @@
-# dotfiles 🍩
-
-![screenshot](https://github.com/user-attachments/assets/51c05d03-d997-40dc-8757-4d13993fcafb)
+# dotfiles 🗃️
 
 Personal dotfiles, managed in three layers:
 
