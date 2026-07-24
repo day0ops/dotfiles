@@ -56,7 +56,7 @@
     {
       overlays.default = import ./nix/shared/overlays;
       darwinConfigurations = {
-        work = lib.mkDarwin {
+        Solo-System-KTalwatta = lib.mkDarwin {
           configPath = ./nix/hosts/work/configuration.nix;
         };
       };
