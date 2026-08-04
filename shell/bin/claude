@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# shellcheck shell=bash
+set -e
+
+# Binary locations (try multiple paths, in priority order)
+NIX_CLAUDE_BINARY="$HOME/.nix-profile/bin/claude"
+NIXOS_CLAUDE_BINARY="/etc/profiles/per-user/$(whoami)/bin/claude"
+
+if [ -x "$NIX_CLAUDE_BINARY" ]; then
+  CLAUDE_BINARY="$NIX_CLAUDE_BINARY"
+elif [ -x "$NIXOS_CLAUDE_BINARY" ]; then
+  CLAUDE_BINARY="$NIXOS_CLAUDE_BINARY"
+else
+  echo "Error: No claude binary found (expected from llm-agents via Nix)." >&2
+  exit 1
+fi
+
+# Auto-load MCP servers distributed via the dotfiles repo (stow/shared/.claude/mcp-servers.json)
+MCP_CONFIG="$HOME/.claude/mcp-servers.json"
+if [ -f "$MCP_CONFIG" ]; then
+  exec "$CLAUDE_BINARY" --mcp-config "$MCP_CONFIG" "$@"
+else
+  exec "$CLAUDE_BINARY" "$@"
+fi

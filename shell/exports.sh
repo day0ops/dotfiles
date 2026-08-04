@@ -49,6 +49,10 @@ function remove_from_path() {
 	fi
 }
 
+function get_github_token() {
+  export GITHUB_TOKEN="$($HOME/.shell/bin/get-bw-secret kasun.talwatta@gmail.com 'Github Developer Access Token')"
+}
+
 # ----------------------------
 # globals
 # ----------------------------
@@ -86,6 +90,7 @@ export PIP_REQUIRE_VIRTUALENV=true # use pip --isolated to bypass
 export GIT_EDITOR="nvim"
 export EDITOR="nvim"
 export GPG_TTY=$(tty)
+export GOPRIVATE="github.com/solo-io/*"
 
 add_to_path append "$HOME/.docker/bin"
 add_to_path append "$HOME/.cargo/bin"
@@ -94,10 +99,15 @@ add_to_path append "$DOTFILES_BREW_PREFIX/opt/mysql-client/bin"
 add_to_path prepend "$DOTFILES_BREW_PREFIX/opt/gnu-sed/libexec/gnubin"
 add_to_path append "$HOME/.lmstudio/bin" # Added by LM Studio CLI (lms)
 add_to_path append "$HOME/.opencode/bin" # Added by OpenCode AI
+add_to_path append "$HOME/.bun/bin" # bun global installs and `bun link` shims
 
 # NOTE: the last prepend appears first in $PATH, so make sure the order is correct below
 add_to_path prepend "$HOME/.local/bin" # user-installed binaries
+add_to_path prepend "$HOME/.shell/bin" # personal and custom scripts
 # HACK: shell/bin is prepended in sourcing.sh after Nix daemon to ensure it comes first
+
+add_to_path prepend "${KREW_ROOT:-$HOME/.krew}/bin" # Homebrew binaries
+add_to_path append "${ASDF_DATA_DIR:-$HOME/.asdf}/shims" # asdf shims
 
 # Source Home Manager session variables (includes sessionPath)
 if [ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]; then
@@ -111,17 +121,23 @@ if [ -f "$HOME/.shell/.env" ]; then
 	# shellcheck source=/dev/null
 	source "$HOME/.shell/.env"
 	set +a
-else
-	echo "Warning: $HOME/.shell/.env does not exist"
+fi
+
+# load ~/.security/.credentials file if it exists (no warning if absent)
+if [ -f "$HOME/.security/.credentials" ]; then
+	set -a
+	# shellcheck source=/dev/null
+	source "$HOME/.security/.credentials"
+	set +a
 fi
 
 # Per-platform settings
 case $(uname) in
 Darwin)
-	# commands for macOS go here
+    # commands for macOS go here
+    export SSH_AUTH_SOCK=/Users/$USER/Library/Containers/com.bitwarden.desktop/Data/.bitwarden-ssh-agent.sock
 
 	add_to_path append "/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
-
 	add_to_path append "/Applications/Obsidian.app/Contents/MacOS"
 
 	;;
