@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "support-agent-tools": {
+      "type": "http",
+      "url": "https://support-agent-tools.is.solo.io/mcp"
+    },
+    "search-docs": {
+      "type": "http",
+      "url": "https://searchdocs.is.solo.io/mcp"
+    },
+    "slack-history": {
+      "type": "http",
+      "url": "https://slack-history-mcp.is.solo.io/mcp"
+    }
+  }
+}
