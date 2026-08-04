@@ -133,7 +133,7 @@ fi
 if [ -n "$brew_prefix" ] || [ -d "/nix/store" ]; then
 	eval "$(atuin init "$shell" --disable-up-arrow)"
 	eval "$(direnv hook "$shell")"
-	# eval "$(mise activate "$shell")"
+	eval "$(mise activate "$shell")"
 	eval "$(zoxide init "$shell")"
 	eval "$(starship init "$shell")"
 
@@ -153,6 +153,10 @@ if [[ $shell == "zsh" ]]; then
 	if [ -n "$brew_prefix" ]; then
 		source <(fzf --zsh)
 	fi
+
+	# Default WORDCHARS includes "/", so backward-kill-word (Ctrl+W) treats a
+	# whole path as one word instead of stopping at each path segment.
+	WORDCHARS=${WORDCHARS//\//}
 
 elif [[ $shell == "bash" ]]; then
 	bash_completion
