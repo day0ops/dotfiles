@@ -18,8 +18,7 @@ Personal dotfiles, managed in three layers:
 
 > [!NOTE]
 >
-> - This requires having Nix installed. See
->   [the Nix README](extras/README_NIX.md).
+> - This requires having Nix installed. See [the Nix docs](docs/NIX.md).
 > - The `flake.nix` is designed to set up the machine based on its hostname.
 
 ```sh
@@ -36,6 +35,13 @@ nix flake update nixpkgs-unstable nix-darwin home-manager-unstable llm-agents do
 # Clean up old Nix generations, keeping the last 5 days for rollback safety
 sudo nix-collect-garbage --delete-older-than 5d
 ```
+
+> [!NOTE]
+> Language toolchains (go, python3, node, ruby, rustup, ...) aren't on the base
+> PATH outside Neovim. Use the shared dev shell instead:
+> `dev-toolchain` (alias for `nix develop ~/.dotfiles#dev --command zsh`, see
+> `shell/aliases.sh`), or `nix develop ~/.dotfiles#dev -c <cmd>` for a single
+> command. See `CLAUDE.md` for details.
 
 > [!NOTE]
 > On macOS, home-manager's per-user activation can silently fail to apply (a
@@ -75,8 +81,8 @@ The shell entrypoint is `stow/shared/.zshrc`, which sources
 3. [`shell/sourcing.sh`](shell/sourcing.sh) — tool initialization, plugins,
    completions
 
-See [Project config](extras/README_PROJECT.md) for details on shell
-initialization, direnv, and per-project tooling.
+See [Project config](docs/PROJECT.md) for details on shell initialization,
+direnv, and per-project tooling.
 
 ### Package tools
 
@@ -104,8 +110,9 @@ packages from the `llm-agents` flake input, upgraded via
   - [My Neovim config](nvim-custom/README.md) - uses `vim.pack`
   - [Minimalistic config](nvim-simple/README.md)
 - Workflows 🌊
-  - [Git config](extras/README_GIT.md)
-  - [Project config](extras/README_PROJECT.md)
+  - [Git config](docs/GIT.md)
+  - [Project config](docs/PROJECT.md)
+  - [Container config](docs/CONTAINER.md)
 - Fonts
   - [Berkeley Mono](https://berkeleygraphics.com/typefaces/berkeley-mono) ❤️
   - [Maple Mono](https://github.com/subframe7536/maple-font)

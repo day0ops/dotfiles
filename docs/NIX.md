@@ -11,7 +11,39 @@
 git clone https://github.com/day0ops/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 
-curl --proto '=https' --tlsv1.2 -L https://nixos.org/nix/install | sh
+# Install upstream open-source Nix
+curl --proto '=https' --tlsv1.2 -L \
+  https://nixos.org/nix/install | sh
+
+# Load Nix into the current shell
+source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+
+# Enable flakes
+sudo mkdir -p /etc/nix
+sudo tee /etc/nix/nix.conf >/dev/null <<'EOF'
+experimental-features = nix-command flakes
+max-jobs = auto
+ssl-cert-file = /etc/ssl/cert.pem
+EOF
+
+# Restart daemon
+sudo launchctl kickstart -k system/org.nixos.nix-daemon
+
+# Clone configuration
+git clone https://github.com/fredrikaverpil/dotfiles.git ~/.dotfiles
+cd ~/.dotfiles
+
+# Inspect available hosts
+nix flake show
+find nix/hosts -mindepth 1 -maxdepth 1 -type d -exec basename {} \;
+
+# Check configuration
+nix flake check --show-trace
+
+# First nix-darwin activation
+sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake ~/.dotfiles#"$(hostname -s)"
+
+
 
 # Set hostname to match a configuration in nix/hosts/
 # macOS: sudo scutil --set HostName <hostname>
@@ -19,14 +51,14 @@ curl --proto '=https' --tlsv1.2 -L https://nixos.org/nix/install | sh
 
 # Apply configuration
 # Linux (NixOS):
-sudo nixos-rebuild switch --flake ~/.dotfiles#$(hostname)
+# sudo nixos-rebuild switch --flake ~/.dotfiles#$(hostname)
 
 # macOS (first time only):
-sudo nix --extra-experimental-features "nix-command flakes" run nix-darwin -- switch --flake ~/.dotfiles#$(hostname)
+# sudo nix --extra-experimental-features "nix-command flakes" run nix-darwin -- switch --flake ~/.dotfiles#$(hostname)
 
 # After first-time setup, rebuild with:
-sudo darwin-rebuild switch --flake ~/.dotfiles#"$(hostname -s)"  # macOS
-sudo nixos-rebuild switch --flake ~/.dotfiles#"$(hostname -s)"   # NixOS
+# sudo darwin-rebuild switch --flake ~/.dotfiles#"$(hostname -s)"  # macOS
+# sudo nixos-rebuild switch --flake ~/.dotfiles#"$(hostname -s)"   # NixOS
 ```
 
 ## Nix management responsibilities
@@ -64,7 +96,8 @@ sudo nixos-rebuild switch --flake ~/.dotfiles#"$(hostname -s)"   # NixOS
 │   ├── exports.sh                   # Environment variables
 │   └── sourcing.sh                  # Shell sourcing logic
 ├── stow/                            # GNU Stow dotfiles
-├── extras/                          # One-off platform-specific extras and legacy configs
+├── docs/                            # Setup guides and architecture reference
+├── extras/                          # One-off platform-specific extras
 └── flake.nix                        # Nix flake configuration
 ```
 

@@ -27,8 +27,10 @@ code in this repository.
   injects them into Neovim only. When running outside Neovim (e.g. Claude Code
   under Remote Control) and needing them, use the devshell:
   `nix develop ~/.dotfiles#dev -c <cmd>` (or enter with
-  `nix develop ~/.dotfiles#dev`). Defined once in `nix/shared/toolchain.nix`,
-  shared by the devshell and Neovim's `nvim-deps-path`.
+  `nix develop ~/.dotfiles#dev`), or the `dev-toolchain` shell alias (see
+  `shell/aliases.sh`) to enter it directly. Defined once in
+  `nix/shared/toolchain.nix`, shared by the devshell and Neovim's
+  `nvim-deps-path`.
 
 ### Verifying a Darwin rebuild actually landed
 
@@ -69,8 +71,9 @@ and **GNU Stow** for dotfile symlinking.
   - `shared/`: Cross-platform dotfiles
   - `Darwin/`: macOS-specific dotfiles
   - `Linux/`: Linux-specific dotfiles
-- `extras/`: One-off platform-specific extras, legacy configs, and additional
-  READMEs
+- `docs/`: Setup guides and architecture reference (Nix, Git/Stow, Containers,
+  Project config)
+- `extras/`: One-off platform-specific extras (installers, templates)
 - `nvim-custom/`: Complete Neovim configuration with modular per-language setup
 - `shell/`: Shell configuration, aliases, and custom scripts
 - `flake.nix`: Main Nix flake defining system configurations and package sources
