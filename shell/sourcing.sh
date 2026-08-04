@@ -136,7 +136,14 @@ if [ -n "$brew_prefix" ] || [ -d "/nix/store" ]; then
 	eval "$(mise activate "$shell")"
 	eval "$(zoxide init "$shell")"
 	eval "$(starship init "$shell")"
+fi
 
+# load ~/.soloio_ent_lic_exports file if it exists (no warning if absent)
+if [ -f "$HOME/.soloio_ent_lic_exports" ]; then
+	set -a
+	# shellcheck source=/dev/null
+	source "$HOME/.soloio_ent_lic_exports"
+	set +a
 fi
 
 # warn if the commit signature verification trust file is missing (see ~/.gitconfig_signing)

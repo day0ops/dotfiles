@@ -1,0 +1,13 @@
+# Solo.io legacy product licenses
+export ENTERPRISE_GLOO_EDGE_LICENSE="`genlicense.sh -product gloo -enterprise -days 365`"
+export ENTERPRISE_GLOO_MESH_LICENSE="$(genlicense.sh -product gloo-mesh -enterprise -days 365)"
+
+# Solo.io enterprise product licenses
+export ENTERPRISE_AGENTGATEWAY_LICENSE=$(genlicense.sh -product agentgateway -enterprise -days 365)
+export ENTERPRISE_KAGENT_LICENSE=$(genlicense.sh -product kagent -enterprise -days 365)
+export ENTERPRISE_KGATEWAY_LICENSE="`genlicense.sh -product gloo -enterprise -days 365`"
+export ENTERPRISE_GLOO_GATEWAY_LICENSE="`genlicense.sh -product gloo -enterprise -days 365`"
+export ENTERPRISE_AGENTREGISTRY_LICENSE=$(genlicense.sh -product agentregistry -enterprise -days 365)
+export ENTERPRISE_GLOO_CORE_LICENSE=$(genlicense.sh -product gloo-core -enterprise -days 365)
+export ENTERPRISE_ISTIO_BASIC_LICENSE=$(genlicense.sh -product istio-support-basic -enterprise -days 365)
+export ENTERPRISE_ISTIO_LICENSE="$(genlicense.sh -product gloo-mesh -enterprise -days 365)"
