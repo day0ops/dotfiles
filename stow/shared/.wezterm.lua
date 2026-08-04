@@ -23,16 +23,7 @@ config.check_for_updates = true
 config.check_for_updates_interval_seconds = 86400
 
 local function is_on_battery()
-  if is_windows then
-    -- FIX: verify that this works...
-    --
-    -- local power_source = io.popen("powercfg /batteryreport")
-    -- local power_source_content = power_source:read("*a")
-    -- power_source:close()
-    --
-    -- local is_battery = string.find(power_source_content, "Battery")
-    -- return is_battery
-  elseif is_macos then
+  if is_macos then
     local power_source = io.popen("pmset -g batt | grep 'AC Power'")
     local power_source_content = power_source:read("*a")
     power_source:close()
@@ -56,9 +47,9 @@ end
 -- https://fonts.google.com/noto/specimen/Noto+Color+Emoji
 local disable_ligatures = { "calt=0", "clig=0", "liga=0" }
 config.font = wezterm.font_with_fallback({
-  { family = "Berkeley Mono" },
-  -- { family = "JetBrains Mono", harfbuzz_features = disable_ligatures },
-  -- { family = "JetBrainsMono Nerd Font", harfbuzz_features = disable_ligatures },
+  -- { family = "Berkeley Mono" },
+  { family = "JetBrains Mono", harfbuzz_features = disable_ligatures },
+  { family = "JetBrainsMono Nerd Font", harfbuzz_features = disable_ligatures },
   { family = "Symbols Nerd Font Mono" },
   { family = "Noto Color Emoji" },
   { family = "Noto Emoji" },
@@ -94,9 +85,9 @@ config.font_rules = {
 }
 
 if is_windows then
-  config.font_size = 10
+  config.font_size = 11
 else
-  config.font_size = 14
+  config.font_size = 11
 end
 
 -- colorschemes
@@ -138,11 +129,13 @@ config.window_padding = {
 }
 
 -- https://wezfurlong.org/wezterm/config/appearance.html
-config.window_background_opacity = 1.0 -- 0.4
-config.text_background_opacity = 1.0 -- 0.9
+config.window_background_opacity = 0.9
+config.text_background_opacity = 0.9
+
+config.macos_window_background_blur = 70
 
 -- tab config
-config.hide_tab_bar_if_only_one_tab = false
+config.hide_tab_bar_if_only_one_tab = true
 config.use_fancy_tab_bar = false
 
 local function get_current_working_dir(tab)
@@ -189,21 +182,33 @@ wezterm.on("update-right-status", function(window, pane)
 end)
 local workspace_switcher = wezterm.plugin.require("https://github.com/MLFlexer/smart_workspace_switcher.wezterm")
 workspace_switcher.zoxide_path = "/opt/homebrew/bin/zoxide"
-wezterm.on("gui-startup", function(cmd)
-  local dotfiles_path = wezterm.home_dir .. "/.dotfiles"
-  local tab, build_pane, window = mux.spawn_window({
-    workspace = "dotfiles",
-    cwd = dotfiles_path,
-    args = args,
-  })
-  build_pane:send_text("nvim\n")
-  mux.set_active_workspace("dotfiles")
-end)
+-- wezterm.on("gui-startup", function(cmd)
+--   local dotfiles_path = wezterm.home_dir .. "/.dotfiles"
+--   local tab, build_pane, window = mux.spawn_window({
+--     workspace = "dotfiles",
+--     cwd = dotfiles_path,
+--     args = args,
+--   })
+--   mux.set_active_workspace("dotfiles")
+-- end)
+table.insert(keys, { key = 'f', mods = 'CTRL|SHIFT', action = act.ToggleFullScreen })
 table.insert(keys, { key = "s", mods = "CTRL|SHIFT", action = workspace_switcher.switch_workspace() })
 table.insert(keys, { key = "t", mods = "CTRL|SHIFT", action = act.ShowLauncherArgs({ flags = "FUZZY|WORKSPACES" }) })
 table.insert(keys, { key = "d", mods = "CTRL|SHIFT", action = act.SwitchToWorkspace({ name = "dotfiles" }) })
 table.insert(keys, { key = "[", mods = "CTRL|SHIFT", action = act.SwitchWorkspaceRelative(1) })
 table.insert(keys, { key = "]", mods = "CTRL|SHIFT", action = act.SwitchWorkspaceRelative(-1) })
+
+-- Option+Left/Right sends CSI 1;3D / CSI 1;3C, which zsh's default emacs
+-- keymap doesn't bind. Send Esc-b / Esc-f directly, which readline/zle
+-- already bind to backward-word / forward-word.
+table.insert(keys, { key = "LeftArrow", mods = "OPT", action = act.SendString("\x1bb") })
+table.insert(keys, { key = "RightArrow", mods = "OPT", action = act.SendString("\x1bf") })
+
+-- pane management (WezTerm's own action names are the reverse of the usual
+-- vim/tmux "vertical = left/right" convention, so map carefully)
+table.insert(keys, { key = "v", mods = "CTRL|SHIFT", action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }) })
+table.insert(keys, { key = "h", mods = "CTRL|SHIFT", action = act.SplitVertical({ domain = "CurrentPaneDomain" }) })
+table.insert(keys, { key = "w", mods = "CTRL|SHIFT", action = act.CloseCurrentPane({ confirm = true }) })
 
 -- ssh hosts from ~./ssh/config
 local ssh_domains = {}

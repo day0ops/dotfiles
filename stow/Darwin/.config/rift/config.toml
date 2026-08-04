@@ -247,7 +247,6 @@ workspace_names = [
 app_rules = [
 	# Terminals -> workspace Terminal (0)
 	{ app_id = "com.mitchellh.ghostty", workspace = "Terminal", floating = true },
-	{ app_id = "net.kovidgoyal.kitty", workspace = "Terminal" },
 	{ app_id = "com.github.wez.wezterm", workspace = "Terminal" },
 
 	# Editors -> workspace Editor (1)
@@ -255,7 +254,6 @@ app_rules = [
 	{ app_id = "com.todesktop.230313mzl4w4u92", workspace = "Editor" }, # Cursor
 
 	# Browsers -> workspace Browser (2)
-	{ app_id = "app.zen-browser.zen", workspace = "Browser" },
 	{ app_id = "company.thebrowser.Browser", workspace = "Browser" },
 
 	# Slack -> workspace Slack (4)
