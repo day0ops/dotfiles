@@ -34,6 +34,7 @@
       url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
     # AI coding agent CLIs (codex, gemini-cli, pi, ...), updated daily upstream.
     # NOTE: Do NOT make this follow another nixpkgs: packages are built and
     # cached against its own pinned nixpkgs-unstable, and cache.numtide.com

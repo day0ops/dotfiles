@@ -20,6 +20,19 @@ in {
 
   time.timeZone = "Pacific/Auckland";
 
+  nix-homebrew = {
+    enable = true;
+
+    # Account that owns /opt/homebrew
+    user = "kasunt";
+
+    # Set true only when you also need Intel Homebrew under Rosetta.
+    enableRosetta = false;
+
+    # Allows imperative `brew tap` commands.
+    mutableTaps = true;
+  };
+
   host.users = {
     kasunt = {
       isAdmin = true;
