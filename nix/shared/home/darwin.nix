@@ -112,10 +112,10 @@
       # 12: Notification Center
       # 13: Lock Screen - immediately locks the screen
       # 14: Quick Note - opens Notes app for quick note-taking
-      "wvous-tl-corner" = 2; # Top-left: Mission Control (overview of all spaces)
-      "wvous-tr-corner" = 4; # Top-right: Desktop (show desktop)
-      "wvous-bl-corner" = 13; # Bottom-left: Lock Screen (security)
-      "wvous-br-corner" = 14; # Bottom-right: Quick Note (productivity)
+      "wvous-tl-corner" = 0; # Top-left: disabled
+      "wvous-tr-corner" = 0; # Top-right: disabled
+      "wvous-bl-corner" = 0; # Bottom-left: disabled
+      "wvous-br-corner" = 0; # Bottom-right: disabled
       showAppExposeGestureEnabled = false;
       showDesktopGestureEnabled = false;
       showLaunchpadGestureEnabled = false;
@@ -248,5 +248,10 @@
         </dict>
       </dict>
     "
+
+    # Raycast: bind its global hotkey to Cmd+Space (keycode 49 = Space), the
+    # slot freed up by disabling Spotlight above. Requires quitting and
+    # relaunching Raycast (or a logout) to take effect.
+    $DRY_RUN_CMD /usr/bin/defaults write com.raycast.macos raycastGlobalHotkey "Command-49"
   '';
 }
