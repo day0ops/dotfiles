@@ -1,28 +1,72 @@
-Brewfile.lock.json
-automatic_backups
-.env
-.nvim.lua
+#### OS Generated ####
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
-# Local .terraform directories
+#### IDE ####
+.idea/
+*.iws
+*.iml
+*.ipr
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+.history/
+*.swp
+*.swo
+*~
+
+#### Terraform ####
 **/.terraform/*
-
-# .tfstate files
 *.tfstate
 *.tfstate.*
-
-# Crash log files
 crash.log
-
-# Exclude all .tfvars files, which might contain sensitive data, such as
-# password, private keys, and other secrets. These should not be part of version
-# control as they are data points which are potentially sensitive and subject
-# to change depending on the environment.
-*.tfvars
-
+crash.*.log
 # Ignore override files as they are usually used to override resources locally and so
 # are not checked in
 override.tf
 *_override.tf
+# Exclude all .tfvars files, which might contain sensitive data, such as
+# password, private keys, and other secrets. These should not be part of
+# version control as they are data points which are potentially sensitive and
+# subject to change depending on the environment.
+*.tfvars
+
+#### Environments ####
+.env
+.env.local
+.env.*.local
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+#### Project build artifacts ####
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+_output/
+_build/
+dist/
+build/
+
+#### Project specific ####
+Brewfile.lock.json
+automatic_backups
+.nvim.lua
 
 # minimal.lua, repro.lua
 nvim_issue
@@ -35,5 +79,13 @@ nvim_issue
 stow/shared/.config/zed/prompts
 stow/Darwin/Library/Application Support/lazygit/state.yml
 
+# Claude Code's runtime state (OAuth/account/session data, machine ID) - not
+# meant to be checked in
+stow/shared/.claude.json
+
 # Runtime symlink created by stow/shared/.claude-web/web-setup.sh on the web sandbox
 /.claude
+
+# Commit signature verification trust file (personal emails + SSH public key) -
+# not meant to be checked in, see ~/.gitconfig_signing
+stow/shared/.config/git/allowed_signers
