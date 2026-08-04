@@ -31,6 +31,7 @@ in
       "claude-code"
       "codex"
       "gemini-cli"
+      "herdr"
       "opencode"
     ];
 
@@ -97,7 +98,6 @@ in
       findutils
       eza
       fzf
-      gpg
       htop
       jq
       nano
@@ -107,7 +107,6 @@ in
       screen
       starship
       stow # GNU Stow for dotfile management
-      tmux
       tree
       watch
       wdiff
@@ -196,9 +195,6 @@ in
       maven
       opentofu
       pnpm
-      temurin
-      temurin@8
-      temurin@11
 
       # ========================================================================
       # Version Managers
@@ -210,19 +206,23 @@ in
       # Infrastructure & Cloud
       # ========================================================================
       argocd
-      awscli
+      awscli2
       aws-iam-authenticator
       azure-cli
       eksctl
       google-cloud-sdk
-      helm
+      kubernetes-helm
       k9s
       kind
       krew
       kubectl
       kubectx
       kustomize
-      minikube
+      (minikube.overrideAttrs (old: {
+        postInstall = (old.postInstall or "") + ''
+          rm -f $out/bin/kubectl
+        '';
+      }))
       skaffold
       stern
 
@@ -232,24 +232,12 @@ in
       claudash # Claude Code status line (day0ops/claudash), packaged via the overlay
       llama-cpp
       ollama
-      PeonPing/tap/peon-ping
 
       # ========================================================================
       # Terminal Support
       # ========================================================================
+      tmux
 
-      # NOTE: do NOT add `ghostty.terminfo` here (or anywhere built for the Pi).
-      # Unlike kitty's, ghostty's terminfo is an output of the full ghostty
-      # build, which is uncached for nixos-raspberrypi's nixpkgs — pulling it in
-      # recompiles GTK/Ghostty from source on the Pi and crashes it.
-      #
-      # How xterm-ghostty is provided instead:
-      #   - macOS: the Ghostty app installs it.
-      #   - SSH targets (e.g. the Pi): Ghostty's client-side ssh-terminfo
-      #     integration (shell-integration-features in ghostty/config) installs
-      #     it automatically on first connect from a fresh Ghostty window.
-      #   - Manual one-off, if ever needed:
-      #       infocmp -x xterm-ghostty | ssh <host> 'tic -x -o "$HOME/.terminfo" -'
     ];
 
     # Tooling available only in Neovim.

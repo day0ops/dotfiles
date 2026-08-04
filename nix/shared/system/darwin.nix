@@ -14,12 +14,41 @@ let
       trusted = true;
     }) taps;
 
-  homebrewTaps = lib.unique (
-    [ ]
-    ++ config.host.extraTaps
-  );
+  homebrewTaps = lib.unique ([ ] ++ config.host.extraTaps);
 
   trustedTapArgs = lib.concatMapStringsSep " " lib.escapeShellArg homebrewTaps;
+
+  # Casks installed to a separate Applications subdirectory to keep development
+  # tools visually grouped apart from regular apps.
+  developmentAppDir = "/Applications/Development";
+
+  developmentCasks =
+    map
+      (name: {
+        inherit name;
+        args.appdir = developmentAppDir;
+      })
+      [
+        "gitify"
+        "jetbrains-toolbox"
+        "postman"
+        "visual-studio-code@insiders"
+        "wezterm"
+        "wireshark-app"
+      ];
+
+  nonDevelopmentCasks = [
+    "appcleaner"
+    "gcloud-cli"
+    "obsidian"
+    "raycast"
+    "signal"
+    "spotify"
+    "tailscale-app"
+    "temurin"
+    "temurin@8"
+    "temurin@11"
+  ];
 in
 {
   options = {
@@ -58,9 +87,13 @@ in
     homebrew = {
       enable = true;
       onActivation = {
-        autoUpdate = true;
+        autoUpdate = false;
         upgrade = true;
-        cleanup = "zap";
+        cleanup = "none";
+
+        extraFlags = [
+          "--verbose"
+        ];
       };
 
       taps = trustedTaps homebrewTaps;
@@ -79,27 +112,16 @@ in
 
         # Mac App Store CLI
         "mas"
+
+        # For AI hooks
+        "PeonPing/tap/peon-ping"
+
+        # Misc
+        "agg" # asciinema to gif
       ]
       ++ config.host.extraBrews;
 
-      casks = [
-        "appcleaner"
-        "exifrenamer"
-        "gcloud-cli"
-        "gitify"
-        "jetbrains-toolbox"
-        "obsidian"
-        "postman"
-        "raycast"
-        "signal"
-        "spotify"
-        "tailscale-app"
-        "visual-studio-code@insiders"
-        "wezterm"
-        "wireshark"
-        "zed"
-      ]
-      ++ config.host.extraCasks;
+      casks = nonDevelopmentCasks ++ developmentCasks ++ config.host.extraCasks;
 
       masApps = {
         # NOTE: apps run in sandboxed mode and DefaultKeyBinding.dict won't work here.
@@ -107,7 +129,7 @@ in
         # "Brother iPrint&Scan" = 1193539993;
         "Clocker" = 1056643111;
         "Dynamic Wallpaper Library" = 1582358382;
-        "Keka" = 470158793;
+        "The Unarchiver" = 425424353;
         "Pandan" = 1569600264;
         "Slack" = 803453959;
         "Smart Tasks" = 1498145730;
@@ -163,6 +185,11 @@ in
     # nix-darwin manages /etc/nix/nix.conf, so set it here — a manual edit would
     # be clobbered on the next rebuild.
     nix.settings.trusted-users = [ "kasunt" ];
+
+    # Touch ID (and paired Apple Watch) for sudo authentication.
+    # nix-darwin manages /etc/pam.d/sudo_local declaratively — a manual edit
+    # would be clobbered on the next rebuild.
+    security.pam.services.sudo_local.touchIdAuth = true;
 
     # Home-manager configuration
     home-manager = {
