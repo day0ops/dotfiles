@@ -12,6 +12,11 @@ let
 
   # Stow package dir matching `uname -s`; Nix knows the platform at build time.
   stowPlatform = if pkgs.stdenv.hostPlatform.isDarwin then "Darwin" else "Linux";
+
+  # Shared instructions file for all coding agents (Claude Code, Codex,
+  # opencode). Out-of-store symlink (like the stow-managed dotfiles) so
+  # edits to nix/shared/home/AGENTS.md take effect without a rebuild.
+  sharedAgentsFile = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.dotfiles/nix/shared/home/AGENTS.md";
 in
 {
   imports = [
@@ -261,6 +266,10 @@ in
         lua51Packages.luarocks # Neovim requires Lua 5.1
       ])
     );
+
+    home.file.".claude/CLAUDE.md".source = sharedAgentsFile;
+    home.file.".codex/AGENTS.md".source = sharedAgentsFile;
+    home.file.".config/opencode/AGENTS.md".source = sharedAgentsFile;
 
   };
 }
