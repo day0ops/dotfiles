@@ -1,0 +1,14 @@
+[gpg]
+	format = ssh
+
+[gpg "ssh"]
+	allowedSignersFile = ~/.config/git/allowed_signers
+	# Resolves the signing key at commit time from whatever's loaded in the
+	# SSH agent (Bitwarden), instead of pinning a key here.
+	defaultKeyCommand = ssh-add -L | grep 'Github SSH'
+
+[commit]
+	gpgsign = true
+
+[tag]
+	gpgsign = true

@@ -85,6 +85,7 @@ export HOMEBREW_NO_ANALYTICS=1
 export PIP_REQUIRE_VIRTUALENV=true # use pip --isolated to bypass
 export GIT_EDITOR="nvim"
 export EDITOR="nvim"
+export GPG_TTY=$(tty)
 
 add_to_path append "$HOME/.docker/bin"
 add_to_path append "$HOME/.cargo/bin"

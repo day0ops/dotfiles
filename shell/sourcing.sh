@@ -139,6 +139,11 @@ if [ -n "$brew_prefix" ] || [ -d "/nix/store" ]; then
 
 fi
 
+# warn if the commit signature verification trust file is missing (see ~/.gitconfig_signing)
+if [ ! -f "$HOME/.config/git/allowed_signers" ]; then
+	echo "Warning: $HOME/.config/git/allowed_signers does not exist (commit signature verification will not work)"
+fi
+
 # ----------------------------
 # shell-specific configuration
 # ----------------------------

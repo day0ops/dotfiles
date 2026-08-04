@@ -38,9 +38,6 @@
 	process = git-lfs filter-process
 	required = true
 
-[gpg]
-	program = gpg
-
 # GitHub https authentication
 # Credential helpers are cumulative, not override: this host-scoped helper does
 # NOT replace the generic `osxkeychain` helper inherited from the system
@@ -50,10 +47,10 @@
 # codeberg.org) don't match this block and still use osxkeychain.
 [credential "https://github.com"]
 	helper =
-	helper = !gh auth git-credential
+	helper = !$HOME/.local/bin/gh auth git-credential
 [credential "https://gist.github.com"]
 	helper =
-	helper = !gh auth git-credential
+	helper = !$HOME/.local/bin/gh auth git-credential
 
 # Optional host-level SSH auth
 [include]
