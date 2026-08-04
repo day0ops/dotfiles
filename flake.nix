@@ -61,7 +61,7 @@
       unstable = inputs.nixpkgs-unstable.legacyPackages;
     in
     {
-      overlays.default = import ./nix/shared/overlays;
+      overlays.default = import ./nix/shared/overlays { inherit inputs; };
       darwinConfigurations = {
         Solo-System-KTalwatta = lib.mkDarwin {
           configPath = ./nix/hosts/work/configuration.nix;
