@@ -224,6 +224,7 @@ in
       # ========================================================================
       # AI
       # ========================================================================
+      claudash # Claude Code status line (day0ops/claudash), packaged via the overlay
       llama-cpp
       ollama
       PeonPing/tap/peon-ping

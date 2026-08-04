@@ -39,6 +39,12 @@
     # cached against its own pinned nixpkgs-unstable, and cache.numtide.com
     # only serves those builds.
     llm-agents.url = "github:numtide/llm-agents.nix";
+    # claudash: Claude Code status line (day0ops/claudash), packaged via
+    # nix/shared/overlays/claudash.nix. Not a flake, just its source.
+    claudash = {
+      url = "github:day0ops/claudash";
+      flake = false;
+    };
     dotfiles = {
       # Used by home-manager for dotfiles bootstrapping.
       url = "github:day0ops/dotfiles";
