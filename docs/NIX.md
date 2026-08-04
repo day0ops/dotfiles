@@ -89,7 +89,6 @@ sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake ~/.dotfiles#"$(h
 │           ├── common.nix           # Cross-platform system packages
 │           ├── darwin.nix           # macOS system config + Homebrew
 │           └── linux.nix            # Linux system config
-├── nvim-custom/                     # Neovim configuration
 ├── shell/                           # Shell configuration
 │   ├── bin/                         # Custom shell scripts
 │   ├── aliases.sh                   # Shell aliases

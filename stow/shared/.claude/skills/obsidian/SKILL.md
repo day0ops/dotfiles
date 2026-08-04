@@ -36,9 +36,9 @@ stop and tell the user — don't fabricate notes.
 The user edits the vault from Neovim via the
 [`obsidian.nvim`](https://github.com/obsidian-nvim/obsidian.nvim) plugin.
 Configuration (workspace path, daily-notes folder, template settings, keymaps)
-lives in `nvim-custom/plugin/obsidian.lua` in this dotfiles repo — read it when
-you need the current setup, since it changes occasionally and this skill should
-not duplicate it.
+lives in `nvim-custom/plugin/obsidian.lua` on the `neovim` branch of this
+dotfiles repo — read it when you need the current setup, since it changes
+occasionally and this skill should not duplicate it.
 
 When suggesting a workflow, prefer pointing the user at the relevant keymap or
 `:Obsidian` command (look them up in that file) over spawning a shell command,

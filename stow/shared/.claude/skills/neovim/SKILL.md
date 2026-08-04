@@ -179,8 +179,9 @@ directory layout, separate from Neovim's built-in `pack/` structure.
 ### Plugin install directory
 
 Plugins are installed under `stdpath("data")/lazy/` (e.g.
-`~/.local/share/nvim-custom/lazy/<plugin-name>/`). This path is **not** part
-of the standard Neovim `packpath`.
+`~/.local/share/<NVIM_APPNAME>/lazy/<plugin-name>/`, or `~/.local/share/nvim/lazy/`
+if `NVIM_APPNAME` is unset). This path is **not** part of the standard Neovim
+`packpath`.
 
 ### Finding plugins (loaded or not)
 

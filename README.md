@@ -107,8 +107,8 @@ packages from the `llm-agents` flake input, upgraded via
 ## Other READMEs and references
 
 - Neovim ⌨️
-  - [My Neovim config](nvim-custom/README.md) - uses `vim.pack`
   - [Minimalistic config](nvim-simple/README.md)
+  - My full `vim.pack`-based config lives on the `neovim` branch
 - Workflows 🌊
   - [Git config](docs/GIT.md)
   - [Project config](docs/PROJECT.md)

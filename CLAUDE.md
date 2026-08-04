@@ -74,7 +74,8 @@ and **GNU Stow** for dotfile symlinking.
 - `docs/`: Setup guides and architecture reference (Nix, Git/Stow, Containers,
   Project config)
 - `extras/`: One-off platform-specific extras (installers, templates)
-- `nvim-custom/`: Complete Neovim configuration with modular per-language setup
+- `nvim-simple/`: Minimalistic Neovim configuration (my full `nvim-custom`
+  config lives on the `neovim` branch)
 - `shell/`: Shell configuration, aliases, and custom scripts
 - `flake.nix`: Main Nix flake defining system configurations and package sources
 
@@ -134,13 +135,10 @@ inputs to actually pick up new versions.
 
 ### Neovim Configuration
 
-- Modular setup with per-language configurations in
-  `nvim-custom/lua/plugin/lang/`
-- Plugin loading order: generic plugins → language-specific → core → local
-  overrides
-- Per-project customization via local `.lazy.lua` files
-- Simple setup in `nvim-simple`, for trying out new nightly features and for a
-  much simpler setup on e.g. remote shells
+- `nvim-simple`: minimalistic config, for trying out new nightly features and
+  for a much simpler setup on e.g. remote shells
+- My full, modular, per-language config (`nvim-custom`) lives on the `neovim`
+  branch of this repo, not on `main`
 
 ## Development Workflow
 
@@ -148,8 +146,6 @@ inputs to actually pick up new versions.
    configs
 2. **Testing**: Run `nix flake check` for Nix validation
 3. **Applying**: ALWAYS ask the user to apply, NEVER apply yourself
-4. **Language tools**: Check `nvim-custom/lua/plugin/lang/*.lua` for
-   formatter/linter configs
 
 ## Code Style Requirements
 
@@ -167,15 +163,6 @@ inputs to actually pick up new versions.
   always
 - **Rust**: Follow rustfmt defaults, use clippy suggestions
 - **YAML**: 2-space indentation, use `---` document separator
-
-## Language-Specific Tooling
-
-For each language, consult the corresponding file in
-`nvim-custom/lua/plugin/lang/` (e.g., `go.lua`, `python.lua`,
-`typescript.lua`) to get exact formatter/linter tools and configurations.
-
-**Note**: If LSP/formatter not found, check Mason install path:
-`~/.local/share/nvim-custom/mason/bin/` or `~/.local/share/nvim/mason/bin/`
 
 ## Gotchas
 
