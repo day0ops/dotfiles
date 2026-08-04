@@ -1,11 +1,11 @@
 ---
 name: impl-worker
 description:
-  Sonnet 4.5 implementer for a single, well-specified unit of work. Spawn one
+  Sonnet 5 implementer for a single, well-specified unit of work. Spawn one
   per task from the `smart` orchestrator. Not for planning or open-ended
   design.
 tools: Read, Write, Edit, Glob, Grep, Bash
-model: claude-sonnet-4-5
+model: claude-sonnet-5
 effort: medium
 ---
 

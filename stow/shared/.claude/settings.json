@@ -1,10 +1,11 @@
 {
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
-    "CLAUDE_CODE_NEW_INIT": "1",
-    "CLOUD_ML_REGION": "global",
     "CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1",
     "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+    "CLAUDE_CODE_DISABLE_MOUSE": "1",
+    "CLAUDE_CODE_NEW_INIT": "1",
+    "CLOUD_ML_REGION": "global",
     "ANTHROPIC_MODEL": "claude-sonnet-5",
     "ANTHROPIC_SMALL_FAST_MODEL": "claude-haiku-4-5"
   },
@@ -81,25 +82,5 @@
   "skipDangerousModePermissionPrompt": true,
   "theme": "auto",
   "agentPushNotifEnabled": true,
-  "skipAutoPermissionPrompt": true,
-  "mcpServers": {
-    "google-docs": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@a-bonus/google-docs-mcp"
-      ]
-    },
-    "support-agent-tools": {
-      "type": "http",
-      "url": "https://support-agent-tools.is.solo.io/mcp",
-      "authorization_token": ""
-    },
-    "slack-history": {
-      "url": "https://slack-history-mcp.is.solo.io/mcp"
-    },
-    "search-docs": {
-      "url": "https://searchdocs.is.solo.io/mcp"
-    }
-  },
+  "skipAutoPermissionPrompt": true
 }
