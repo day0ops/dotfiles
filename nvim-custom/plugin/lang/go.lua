@@ -12,6 +12,12 @@ vim.filetype.add({
 })
 
 require("lazyload").on_vim_enter(function()
+  -- goplements.nvim and go-impl.nvim both query treesitter for "go" as soon as
+  -- they load, without checking the parser is installed first. Ensure it here
+  -- so they never race the lazy, FileType-triggered install in
+  -- plugin/nvim_treesitter.lua.
+  require("treesitter_parsers").ensure_installed("go")
+
   -- tree-sitter dependent plugins
   do
     if Config.use_treesitter_parser then

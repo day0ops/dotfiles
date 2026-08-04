@@ -146,6 +146,10 @@
       "src": "https://github.com/nvim-neotest/neotest",
       "version": ">=0.0.0"
     },
+    "neotest-golang": {
+      "rev": "61726ad54b6b94c73d130b65c33575d13a61fc11",
+      "src": "https://github.com/fredrikaverpil/neotest-golang"
+    },
     "neotest-plenary": {
       "rev": "3523adcf9ffaad1911960c5813b0136c1b63a2ec",
       "src": "https://github.com/nvim-neotest/neotest-plenary"
@@ -242,6 +246,10 @@
     "plenary.nvim": {
       "rev": "74b06c6c75e4eeb3108ec01852001636d85a932b",
       "src": "https://github.com/nvim-lua/plenary.nvim"
+    },
+    "pr.nvim": {
+      "rev": "5e7bec503e88a9cf0eb0e11206f7f2130aa205c9",
+      "src": "https://github.com/fredrikaverpil/pr.nvim"
     },
     "render-markdown.nvim": {
       "rev": "f422cb5c6855f150e2ddcfaf44e7157b98b34f6a",

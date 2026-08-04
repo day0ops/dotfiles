@@ -53,44 +53,16 @@ if Config.use_nvim_treesitter then
       callback = inject_custom_parsers,
     })
 
-    require("lazyload").on_vim_enter(function()
-      require("treesitter-context").setup({
-        multiwindow = true,
-      })
-    end)
+    require("treesitter-context").setup({
+      multiwindow = true,
+    })
 
-    --- Sign parser .so on macOS to prevent code-signature crashes.
-    ---@param parser_name string
-    local function sign_parser_macos(parser_name)
-      if vim.fn.has("mac") ~= 1 then
-        return
-      end
-      local parser_path = vim.fn.stdpath("data") .. "/site/parser/" .. parser_name .. ".so"
-      if vim.fn.filereadable(parser_path) == 1 then
-        vim.fn.system({ "codesign", "--force", "--sign", "-", parser_path })
-      end
-    end
-
-    --- Install a parser via nvim-treesitter.
-    ---@param lang string parser/language name
-    ---@return boolean success
-    local function install_parser(lang)
-      if not Config.use_nvim_treesitter then
-        return false
-      end
-      local parsers = require("nvim-treesitter.parsers")
-      if not parsers[lang] then
-        return false
-      end
-      require("nvim-treesitter").install({ lang }):wait(30000)
-      sign_parser_macos(lang)
-      return true
-    end
+    local ensure_installed = require("treesitter_parsers").ensure_installed
 
     --- Auto-start treesitter highlighting for every buffer.
-    --- Registered at plugin/ sourcing time (step 11) so it runs before LSP's
-    --- FileType handlers (registered at VimEnter), preventing race conditions
-    --- with plugins that use treesitter queries on LspAttach.
+    --- Registered synchronously (see `{ sync = true }` below) so this runs
+    --- before any async on_vim_enter callback, preventing race conditions
+    --- with plugins that use treesitter queries on LspAttach or at require time.
     vim.api.nvim_create_autocmd("FileType", {
       group = vim.api.nvim_create_augroup("treesitter-start", { clear = true }),
       callback = function(event)
@@ -110,10 +82,10 @@ if Config.use_nvim_treesitter then
           return
         end
 
-        if install_parser(lang) then
+        if ensure_installed(lang) then
           pcall(vim.treesitter.start, bufnr, lang)
         end
       end,
     })
-  end)
+  end, { sync = true })
 end

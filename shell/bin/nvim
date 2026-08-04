@@ -73,7 +73,7 @@ fi
 # Check if NVIM_APPNAME is already set
 if [ -z "$NVIM_APPNAME" ]; then
   HOSTNAME=$(hostname)
-  NVIM_APPNAME=nvim-simple $NVIM_BINARY "$@"
+  NVIM_APPNAME=nvim-custom $NVIM_BINARY "$@"
 else
   echo "Warning: Using NVIM_APPNAME=$NVIM_APPNAME"
   $NVIM_BINARY "$@"
