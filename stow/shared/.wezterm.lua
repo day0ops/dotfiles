@@ -28,6 +28,9 @@ config.check_for_updates_interval_seconds = 86400
 -- as input-history navigation instead of scrolling.
 config.alternate_buffer_wheel_scroll_speed = 0
 
+-- Disable wheel-scroll-over-the-tab-bar switching tabs
+config.mouse_wheel_scrolls_tabs = false
+
 local function is_on_battery()
   if is_macos then
     local power_source = io.popen("pmset -g batt | grep 'AC Power'")
