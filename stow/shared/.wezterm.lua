@@ -22,6 +22,12 @@ local is_macos = os.getenv("OS") == "Darwin"
 config.check_for_updates = true
 config.check_for_updates_interval_seconds = 86400
 
+-- Without this, wheel scroll in an alternate-screen-buffer app that hasn't
+-- enabled mouse reporting (e.g. Claude Code's fullscreen renderer) gets
+-- converted into Up/Down arrow key presses, which some apps then intercept
+-- as input-history navigation instead of scrolling.
+config.alternate_buffer_wheel_scroll_speed = 0
+
 local function is_on_battery()
   if is_macos then
     local power_source = io.popen("pmset -g batt | grep 'AC Power'")
@@ -103,14 +109,31 @@ end
 
 local function scheme_for_appearance(appearance)
   if appearance:find("Dark") then
-    return "Tokyo Night Moon"
+    return "Catppuccin Mocha"
   else
-    return "dayfox"
-    -- return "Tokyo Night Day"
+    return "Catppuccin Latte"
   end
 end
 
 config.color_scheme = scheme_for_appearance(get_appearance())
+
+-- Catppuccin accents for the tab bar below, matched to whichever flavor
+-- config.color_scheme picked above
+local catppuccin_accents = get_appearance():find("Dark")
+    and {
+      crust = "#11111b",
+      mantle = "#181825",
+      overlay0 = "#6c7086",
+      subtext0 = "#a6adc8",
+      lavender = "#b4befe",
+    } -- Mocha
+  or {
+    crust = "#dce0e8",
+    mantle = "#e6e9ef",
+    overlay0 = "#9ca0b0",
+    subtext0 = "#6c6f85",
+    lavender = "#7287fd",
+  } -- Latte
 
 -- title bar
 -- NOTE: For Windows/WSL, the "RESIZE" setting doesn't allow for moving around the window
@@ -137,6 +160,7 @@ config.macos_window_background_blur = 70
 -- tab config
 config.hide_tab_bar_if_only_one_tab = true
 config.use_fancy_tab_bar = false
+config.tab_bar_at_bottom = true
 
 local function get_current_working_dir(tab)
   local current_dir = tab.active_pane and tab.active_pane.current_working_dir or { file_path = "" }
@@ -157,22 +181,27 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
     end
   end
 
-  local cwd = wezterm.format({
-    { Attribute = { Intensity = "Bold" } },
-    { Text = get_current_working_dir(tab) },
-  })
-
-  local title = string.format(" [%s] %s", tab.tab_index + 1, cwd)
-
+  local background = tab.is_active and catppuccin_accents.mantle or catppuccin_accents.crust
+  local foreground = tab.is_active and catppuccin_accents.lavender or catppuccin_accents.subtext0
   if has_unseen_output then
-    return {
-      { Foreground = { Color = "#8866bb" } },
-      { Text = title },
-    }
+    foreground = "#8866bb"
   end
 
+  -- separate top-level FormatItems (not a nested wezterm.format() string) so
+  -- the bold attribute on the cwd doesn't disturb the surrounding color state.
+  -- Divider + its padding are one self-contained leading block (" │ ") so
+  -- spacing around it never depends on the PRECEDING tab's trailing content -
+  -- long titles get truncated from the tail against max_width, which would
+  -- otherwise eat a trailing space/divider unevenly per tab.
   return {
-    { Text = title },
+    { Background = { Color = background } },
+    { Foreground = { Color = catppuccin_accents.overlay0 } },
+    { Text = " │ " },
+    { Foreground = { Color = foreground } },
+    { Text = string.format("[%s] ", tab.tab_index + 1) },
+    { Attribute = { Intensity = "Bold" } },
+    { Text = get_current_working_dir(tab) },
+    { Attribute = { Intensity = "Normal" } },
   }
 end)
 
@@ -243,6 +272,11 @@ config.visual_bell = {
 }
 config.colors = {
   visual_bell = "#202020",
+  tab_bar = {
+    background = catppuccin_accents.crust,
+    new_tab = { bg_color = catppuccin_accents.crust, fg_color = catppuccin_accents.subtext0 },
+    new_tab_hover = { bg_color = catppuccin_accents.mantle, fg_color = catppuccin_accents.lavender },
+  },
 }
 
 -- https://wezfurlong.org/wezterm/config/lua/config/default_domain.html
