@@ -3,6 +3,7 @@
 ## Style
 
 - Never use the em dash "—". Write the sentence in a way that does not need a dash. If not possible preference would be a plain dash "-" instead.
+- Never soft-wrap prose in CLAUDE.md, AGENTS.md, or similar docs by inserting line breaks mid-paragraph. Don't add newlines for no reason, let lines run long and wrap naturally.
 
 ## Git
 

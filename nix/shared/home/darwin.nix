@@ -32,7 +32,9 @@
   home.sessionVariables.BOB_CONFIG = "$HOME/.config/bob/config.toml";
 
   packageTools.npmPackages = [ ];
-  packageTools.uvTools = [ ];
+  packageTools.uvTools = [
+    { package = "mcp-obsidian"; } # Claude Desktop <-> Obsidian Local REST API, see docs/OBSIDIAN.md
+  ];
 
   packageTools.llmAgents = [
     # "amp"
@@ -161,6 +163,9 @@
 
     # Trackpad
     "com.apple.AppleMultitouchTrackpad" = {
+      # Tap to click: disabled
+      Clicking = false;
+
       # Secondary click: Click or tap with two fingers
       TrackpadRightClick = true;
       TrackpadCornerSecondaryClick = 0;
@@ -168,15 +173,43 @@
       # Look up & data detectors: Force Click with one finger
       ForceSuppressed = false;
 
-      # Swipe between pages: Scroll left or right with two fingers
-      TrackpadTwoFingerFromRightEdgeSwipeGesture = 3;
+      # Notification Centre: Swipe left from the right edge with two fingers
+      TrackpadTwoFingerFromRightEdgeSwipeGesture = 0;
 
       # Swipe between full-screen apps: Swipe left/right with three fingers
-      TrackpadThreeFingerHorizSwipeGesture = 1;
+      TrackpadThreeFingerHorizSwipeGesture = 2;
 
       # Disable other gestures
-      TrackpadPinch = 0;
-      TrackpadRotate = 0;
+      TrackpadPinch = 0; # Zoom in or out
+      TrackpadRotate = 0; # Rotate
+      TrackpadTwoFingerDoubleTapGesture = 0; # Smart zoom
+      TrackpadThreeFingerVertSwipeGesture = 0;
+      TrackpadFourFingerHorizSwipeGesture = 0;
+      TrackpadFourFingerVertSwipeGesture = 0;
+      TrackpadFourFingerPinchGesture = 0;
+    };
+
+    # Note: after applying, System Settings > Trackpad may still show
+    # "Zoom in or out" / "Smart zoom" / "Rotate" as ON. This is cosmetic:
+    # System Settings.app doesn't reliably refresh its toggle display when a
+    # value is changed via `defaults write` instead of the UI itself, even
+    # across quit/relaunch. Verify with the actual gesture (e.g. pinch in
+    # Preview/Safari), not the toggle. If it bothers you, click the toggle
+    # ON then OFF once in the UI to force it to resync its own display.
+
+    # macOS also keeps a separate copy of trackpad gesture state under this
+    # domain (used by some Macs/HID stacks even for the built-in trackpad);
+    # System Settings writes both, so both must be set or gestures like
+    # pinch-zoom/rotate/smart zoom stay enabled after rebuild.
+    "com.apple.driver.AppleBluetoothMultitouch.trackpad" = {
+      Clicking = false;
+      TrackpadRightClick = true;
+      TrackpadCornerSecondaryClick = 0;
+      TrackpadTwoFingerFromRightEdgeSwipeGesture = 0;
+      TrackpadThreeFingerHorizSwipeGesture = 2;
+      TrackpadPinch = 0; # Zoom in or out
+      TrackpadRotate = 0; # Rotate
+      TrackpadTwoFingerDoubleTapGesture = 0; # Smart zoom
       TrackpadThreeFingerVertSwipeGesture = 0;
       TrackpadFourFingerHorizSwipeGesture = 0;
       TrackpadFourFingerVertSwipeGesture = 0;
@@ -190,8 +223,8 @@
       # Secondary click
       ContextMenuGesture = 1;
 
-      # Swipe between pages
-      AppleEnableSwipeNavigateWithScrolls = true;
+      # Swipe between pages: disabled
+      AppleEnableSwipeNavigateWithScrolls = false;
     };
   };
 
@@ -206,7 +239,7 @@
     $DRY_RUN_CMD /usr/bin/defaults write -globalDomain KeyRepeat -int 1
 
     # Mouse/trackpad settings (user-specific)
-    $DRY_RUN_CMD /usr/bin/defaults write -globalDomain com.apple.mouse.tapBehavior -int 1
+    $DRY_RUN_CMD /usr/bin/defaults write -globalDomain com.apple.mouse.tapBehavior -int 0
     $DRY_RUN_CMD /usr/bin/defaults write -globalDomain NSWindowShouldDragOnGesture -bool true
 
     # Spelling correction (user-specific)

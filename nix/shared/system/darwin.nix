@@ -39,7 +39,9 @@ let
 
   nonDevelopmentCasks = [
     "appcleaner"
+    "claude"
     "gcloud-cli"
+    "google-drive"
     "obsidian"
     "raycast"
     "signal"
@@ -109,6 +111,7 @@ in
         "bob" # Neovim version manager; brew binary is writable, nixpkgs' is not
         "socktainer"
         "pkgx"
+        "podman"
 
         # Mac App Store CLI
         "mas"

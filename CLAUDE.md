@@ -5,8 +5,7 @@ code in this repository.
 
 ## Core Commands
 
-- **Full rebuild (Darwin)**: `sudo darwin-rebuild switch --flake
-  ~/.dotfiles#"$(hostname -s)"` (hosts: `work`)
+- **Full rebuild (Darwin)**: `sudo darwin-rebuild switch --flake ~/.dotfiles#"$(hostname -s)"` (flake attribute is the machine's actual hostname, e.g. `Solo-System-KTalwatta`; `work` is only the `nix/hosts/` config directory name)
 - **Full rebuild (NixOS)**: `sudo nixos-rebuild switch --flake
   ~/.dotfiles#"$(hostname -s)"` (host: `rpi5-homelab`)
 - **Symlink dotfiles only**: `cd ~/.dotfiles/stow && stow --target="$HOME"
@@ -18,8 +17,7 @@ code in this repository.
   and `npm-tools-upgrade`
 - **Nix rebuild**: ask user to run this, NEVER run it yourself
 - **Nix validation**: `nix flake check` or `nix flake check --all-systems`
-- **Nix builds**: `nix build .#darwinConfigurations.<host>.system` (hosts:
-  `work` on Darwin)
+- **Nix builds**: `nix build .#darwinConfigurations.<host>.system`, where `<host>` is the flake attribute (the machine's `hostname -s`, e.g. `Solo-System-KTalwatta`), not the `nix/hosts/` directory name
 - **Format Nix files**: `nix fmt` (uses nixfmt-rfc-style)
 - **CI testing**: Follow `.github/workflows/test.yml` workflow
 - **Toolchain outside Neovim**: language toolchains (go, python3, node, ruby,
