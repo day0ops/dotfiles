@@ -66,13 +66,20 @@
     "ccc-skills@ccc": true,
     "frontend-design@claude-plugins-official": true,
     "caveman@caveman": true,
-    "superpowers@claude-plugins-official": true
+    "superpowers@claude-plugins-official": true,
+    "drawio@drawio": true
   },
   "extraKnownMarketplaces": {
     "claude-plugins-official": {
       "source": {
         "source": "git",
         "url": "https://github.com/anthropics/claude-plugins-official.git"
+      }
+    },
+    "drawio": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/jgraph/drawio-mcp.git"
       }
     }
   },
