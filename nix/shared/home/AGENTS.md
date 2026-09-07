@@ -1,8 +1,17 @@
 # global agent instructions
 
-## Style
+## Documentation & Comments
 
+### Always Do
+- Write comments exclusively to explain business logic, complex algorithms, or design constraints that cannot be inferred from the code itself.
+- When modifying or refactoring existing code, immediately update or delete any surrounding comments to prevent them from becoming stale or misleading.
+- Provide clear docstrings for all exported public functions, classes, and components detailing parameters and return types.
+
+### Never Do
 - Never use the em dash "—". Write the sentence in a way that does not need a dash. If not possible preference would be a plain dash "-" instead.
+- Never soft-wrap prose in CLAUDE.md, AGENTS.md, or similar docs by inserting line breaks mid-paragraph. Don't add newlines for no reason, let lines run long and wrap naturally.
+- Never write comments that simply repeat what the code does line-by-line (e.g., `// Increment x by 1`).
+- Avoid conversational filler or placeholders in comments. Keep them brief, punchy, and technical.
 
 ## Git
 
@@ -15,6 +24,7 @@
 - When making technical decisions, do not give much weight to development cost.
   Instead, prefer quality, simplicity, robustness, scalability, and long term maintainability.
 - For one-off or infrequent operational work, start with the simplest direct end-to-end path. Do not build wrappers, control planes, policy layers, custom verifiers, or automation unless the direct path exposes a concrete blocker or repeated need that justifies the added machinery.
+- Keep code comments concise and short for readability
 
 ## Testing and quality
 

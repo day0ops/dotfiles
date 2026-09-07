@@ -39,7 +39,11 @@ let
 
   nonDevelopmentCasks = [
     "appcleaner"
+    "claude"
+    "domzilla-caffeine"
+    "drawio"
     "gcloud-cli"
+    "google-drive"
     "obsidian"
     "raycast"
     "signal"
@@ -109,6 +113,7 @@ in
         "bob" # Neovim version manager; brew binary is writable, nixpkgs' is not
         "socktainer"
         "pkgx"
+        "podman"
 
         # Mac App Store CLI
         "mas"
@@ -253,6 +258,12 @@ in
 
     # macOS system defaults configuration
     system.defaults = {
+      dock = {
+        # Minimize windows into their own Dock slot instead of collapsing
+        # into the application icon.
+        minimize-to-application = false;
+      };
+
       # System-wide settings that should apply to all users
       CustomUserPreferences = {
         "com.apple.SoftwareUpdate" = {
