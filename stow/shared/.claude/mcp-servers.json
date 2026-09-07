@@ -14,7 +14,14 @@
     },
     "customer360": {
       "type": "http",
-      "url": "https://mcp.cs.solo.io/mcp"
+      "url": "https://mcp.cs.solo.dev/mcp"
+    },
+    "siesta": {
+      "type": "http",
+      "url": "https://siesta.fe.solo.io/mcp",
+      "headers": {
+        "Authorization": "Bearer ${SIESTA_PAT}"
+      }
     }
   }
 }
