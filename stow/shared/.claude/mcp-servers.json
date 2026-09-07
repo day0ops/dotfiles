@@ -11,6 +11,10 @@
     "slack-history": {
       "type": "http",
       "url": "https://slack-history-mcp.is.solo.io/mcp"
+    },
+    "customer360": {
+      "type": "http",
+      "url": "https://mcp.cs.solo.io/mcp"
     }
   }
 }
