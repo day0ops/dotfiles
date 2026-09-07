@@ -17,6 +17,14 @@ let
   # opencode). Out-of-store symlink (like the stow-managed dotfiles) so
   # edits to nix/shared/home/AGENTS.md take effect without a rebuild.
   sharedAgentsFile = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.dotfiles/nix/shared/home/AGENTS.md";
+
+  # nixpkgs' gnused installs its binary as "sed" (shadowing macOS's BSD sed on
+  # PATH), not "gsed" like Homebrew's gnu-sed formula does. Scripts written
+  # against the common macOS portability convention (`command -v gsed`)
+  # need that exact name, so provide it as a thin wrapper.
+  gsed = pkgs.writeShellScriptBin "gsed" ''
+    exec ${pkgs.gnused}/bin/sed "$@"
+  '';
 in
 {
   imports = [
@@ -182,6 +190,7 @@ in
       chafa
       exiftool
       gnused # GNU tools (for macOS compatibility)
+      gsed # exposes gnused's sed under the conventional "gsed" name too
       imagemagick
       llama-cpp
       presenterm
@@ -195,6 +204,7 @@ in
       maven
       opentofu
       pnpm
+      yarn
 
       # ========================================================================
       # Version Managers

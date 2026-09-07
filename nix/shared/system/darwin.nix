@@ -40,6 +40,8 @@ let
   nonDevelopmentCasks = [
     "appcleaner"
     "claude"
+    "domzilla-caffeine"
+    "drawio"
     "gcloud-cli"
     "google-drive"
     "obsidian"
@@ -256,6 +258,12 @@ in
 
     # macOS system defaults configuration
     system.defaults = {
+      dock = {
+        # Minimize windows into their own Dock slot instead of collapsing
+        # into the application icon.
+        minimize-to-application = false;
+      };
+
       # System-wide settings that should apply to all users
       CustomUserPreferences = {
         "com.apple.SoftwareUpdate" = {
