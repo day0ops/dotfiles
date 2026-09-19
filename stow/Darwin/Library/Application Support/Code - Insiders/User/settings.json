@@ -1,3 +1,7 @@
 {
-    "editor.wordWrap": "on"
+    "editor.wordWrap": "on",
+    "files.autoSave": "onFocusChange",
+    "workbench.settings.applyToAllProfiles": [
+        "files.autoSave"
+    ]
 }

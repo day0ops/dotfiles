@@ -52,6 +52,7 @@ let
     "temurin"
     "temurin@8"
     "temurin@11"
+    "thaw"
   ];
 in
 {

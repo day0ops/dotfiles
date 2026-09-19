@@ -15,7 +15,7 @@
 
 ## Git
 
-- When writing commit messages, NEVER auto-add your agent name as co-author and keep the commit messages concise, short sentences are easier to digest by a human reviewer.
+- When writing commit messages, NEVER auto-add your agent name as co-author and keep the commit messages concise and short, short sentences are easier to digest by a human reviewer.
 - Never manually modify CHANGELOG.md files or any files that are marked as auto-generated.
 - Never commit superpowers docs or design files to git.
 
