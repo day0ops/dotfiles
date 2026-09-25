@@ -113,6 +113,7 @@ packages from the `llm-agents` flake input, upgraded via
   - [Git config](docs/GIT.md)
   - [Project config](docs/PROJECT.md)
   - [Container config](docs/CONTAINER.md)
+  - [Obsidian](docs/OBSIDIAN.md)
 - Fonts
   - [Berkeley Mono](https://berkeleygraphics.com/typefaces/berkeley-mono) ❤️
   - [Maple Mono](https://github.com/subframe7536/maple-font)
