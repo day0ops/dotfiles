@@ -47,8 +47,12 @@
       flake = false;
     };
     dotfiles = {
-      # Used by home-manager for dotfiles bootstrapping.
-      url = "github:day0ops/dotfiles";
+      # Used by home-manager for dotfiles bootstrapping. git+https (rather
+      # than the github: shorthand, which doesn't accept this parameter) with
+      # submodules=1 pulls in claude-skills (see .gitmodules) on fresh
+      # machines that don't yet have a local clone with its submodule
+      # initialized.
+      url = "git+https://github.com/day0ops/dotfiles.git?submodules=1";
       flake = false;
     };
   };

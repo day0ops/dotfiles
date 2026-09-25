@@ -69,17 +69,19 @@
     "dotfiles": {
       "flake": false,
       "locked": {
-        "lastModified": 1784852699,
-        "narHash": "sha256-789Lz2e9QxgGnJ0NKObpFPWMqsttA7/+AipHpMnEACI=",
-        "owner": "day0ops",
-        "repo": "dotfiles",
-        "rev": "cdd31cd740725bd9e43fe779634abe09eeb3e34c",
-        "type": "github"
+        "lastModified": 1789786902,
+        "narHash": "sha256-Uh4+rOOszSu/0drrraXwfkiPoZWJU1NZrgcgTQJryl4=",
+        "ref": "refs/heads/main",
+        "rev": "ea0d1934465a20c2460feefb912cb338d2363d3e",
+        "revCount": 37,
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/day0ops/dotfiles.git"
       },
       "original": {
-        "owner": "day0ops",
-        "repo": "dotfiles",
-        "type": "github"
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/day0ops/dotfiles.git"
       }
     },
     "flake-parts": {

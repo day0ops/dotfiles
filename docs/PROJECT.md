@@ -436,6 +436,14 @@ export CLAUDE_CONFIG_DIR="/Users/fredrik/.claude-work"
 
 This switches Claude Code to use `~/.claude-work/` (synced from `stow/shared/.claude-work/` via Stow) when working in that directory.
 
+##### Public, shared skills
+
+Skills with no confidential content live in a separate public repo, [day0ops/claude-skills](https://github.com/day0ops/claude-skills), added here as a git submodule at `claude-skills/`. Every directory inside it is symlinked via Stow into both `~/.claude/skills` and `~/.claude-work/skills` (see e.g. `stow/shared/.claude/skills/obsidian`, a symlink into the submodule), so a skill defined there is available in both Claude Code profiles. `git submodule update --init --recursive` (run automatically by `home.activation.handleDotfiles`) keeps the submodule in sync — no manual clone step needed.
+
+##### Private, company-specific skills
+
+Skills that reference internal tools or business-confidential detail don't belong in this public repo, or in the public `claude-skills` submodule above. Keep them in a separate private repo instead (e.g. `your-org/private-claude-skills`), clone it once to `~/.solo-claude-skills`, and add a `home.activation` script to your user's home-manager config (`handleSoloClaudeSkills` in this repo) that links every skill directory it finds there into `~/.claude-work/skills` on each rebuild. Have it link only, never clone — if the local clone is missing, no-op with a message instead of failing the rebuild, so machines without access to the private repo aren't broken.
+
 ```sh
 # you can import mcp servers from claude desktop, into ~/.claude.json
 claude mcp add-from-claude-desktop --scope user
