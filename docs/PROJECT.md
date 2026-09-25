@@ -28,34 +28,22 @@ Project tools     nix / devbox / devenv / mise / pkgx — project-specific CLI v
 Editor (Neovim)   Mason — LSPs, linters, formatters, debug adapters
 ```
 
-Later layers override earlier ones. For example, a project's `.envrc` can
-activate a Nix dev shell that shadows a home-manager-installed Go with a
-project-pinned version, and Mason's `PATH = "append"` ensures those
-project-local tools take precedence inside Neovim too.
+Later layers override earlier ones. For example, a project's `.envrc` can activate a Nix dev shell that shadows a home-manager-installed Go with a project-pinned version, and Mason's `PATH = "append"` ensures those project-local tools take precedence inside Neovim too.
 
 ### Shell initialization
 
 The shell startup chain is:
 
 1. **`.zshrc`** → sources `.zshrc_user`
-2. **[`exports.sh`](shell/exports.sh)** — PATH construction, Homebrew shellenv,
-   `$DOTFILES` and other globals, home-manager session vars, `~/.shell/.env`
+2. **[`exports.sh`](shell/exports.sh)** — PATH construction, Homebrew shellenv, `$DOTFILES` and other globals, home-manager session vars, `~/.shell/.env`
 3. **[`aliases.sh`](shell/aliases.sh)** — shell aliases
-4. **[`sourcing.sh`](shell/sourcing.sh)** — Nix daemon, tool initialization
-   (atuin, direnv, mise, zoxide, starship, fzf), zsh completions/plugins, and
-   `cd` overrides
+4. **[`sourcing.sh`](shell/sourcing.sh)** — Nix daemon, tool initialization (atuin, direnv, mise, zoxide, starship, fzf), zsh completions/plugins, and `cd` overrides
 
-The `cd` override (and `z`/`zi`) automatically activates Python virtual
-environments when entering directories with a `.python-version` or `.venv/`.
-This works alongside direnv — direnv handles Nix shells and env vars, while the
-`cd` override handles behaviors that would be too cumbersome to maintain in
-scattered `.envrc` files across every project. Some things are simply easier to
-handle centrally in one place.
+The `cd` override (and `z`/`zi`) automatically activates Python virtual environments when entering directories with a `.python-version` or `.venv/`. This works alongside direnv — direnv handles Nix shells and env vars, while the `cd` override handles behaviors that would be too cumbersome to maintain in scattered `.envrc` files across every project. Some things are simply easier to handle centrally in one place.
 
 ## Direnv
 
-[direnv](https://direnv.net) automatically loads/unloads environment variables
-and dev shells when entering/leaving directories.
+[direnv](https://direnv.net) automatically loads/unloads environment variables and dev shells when entering/leaving directories.
 
 Add `.envrc` files in strategic locations:
 
@@ -74,8 +62,7 @@ source_up_if_exists
 
 ### Direnv with per-project tools
 
-Each tool described in the [Per-project tooling](#per-project-tooling) section
-below has its own direnv integration. Add the relevant line to your `.envrc`:
+Each tool described in the [Per-project tooling](#per-project-tooling) section below has its own direnv integration. Add the relevant line to your `.envrc`:
 
 ```sh
 # devbox
@@ -100,23 +87,15 @@ use flake path:./.nix-devshell --impure
 
 > [!IMPORTANT]
 >
-> After editing any `.envrc`, you must re-run `direnv allow .` to authorize the
-> changes. Direnv blocks modified `.envrc` files until explicitly re-allowed.
+> After editing any `.envrc`, you must re-run `direnv allow .` to authorize the changes. Direnv blocks modified `.envrc` files until explicitly re-allowed.
 
 > [!NOTE]
 >
-> The `use flake` command in `.envrc` is provided by
-> [nix-direnv](https://github.com/nix-community/nix-direnv), not stock direnv.
-> It caches the Nix evaluation so that `cd`-ing into a directory is fast after
-> the first build. Without nix-direnv, `use flake` would re-evaluate on every
-> shell entry. nix-direnv is installed via home-manager in this dotfiles repo.
-> If it's missing, `use flake` in `.envrc` will fail with an unknown command
-> error.
+> The `use flake` command in `.envrc` is provided by [nix-direnv](https://github.com/nix-community/nix-direnv), not stock direnv. It caches the Nix evaluation so that `cd`-ing into a directory is fast after the first build. Without nix-direnv, `use flake` would re-evaluate on every shell entry. nix-direnv is installed via home-manager in this dotfiles repo. If it's missing, `use flake` in `.envrc` will fail with an unknown command error.
 
 #### Combining tools
 
-These integrations can be combined — e.g. devbox for Nix packages + mise for
-tasks or bleeding edge tool versions:
+These integrations can be combined — e.g. devbox for Nix packages + mise for tasks or bleeding edge tool versions:
 
 ```sh
 source_up_if_exists
@@ -189,29 +168,22 @@ export PGCONN="$PGDRIVER$DB_USER:$DB_PASS@$PGHOST:$PGPORT/$GCE_DATABASE_NAME$PGF
 | Nested configs | No (one .envrc) | No (one .envrc)     | No (one .envrc)           | Yes (.mise.toml per dir) | Yes (auto-detect)  | Yes (per dir via shims)        |
 | Best for       | Simple Nix envs | Full Nix power      | Full control              | Fast versioning + tasks  | Quick prototyping  | Custom registry of tasks/tools |
 
-These tools can be combined — e.g. use devbox/devenv for Nix packages and mise
-for bleeding-edge versions or its task runner.
+These tools can be combined — e.g. use devbox/devenv for Nix packages and mise for bleeding-edge versions or its task runner.
 
 > [!TIP]
 >
-> **Monorepos with mixed versions:** In a monorepo with e.g. multiple sub
-> projects with different tool versions, pkgx auto-detects the version from
-> lockfiles with zero config. In contrast, mise requires a `.mise.toml` per
-> subdirectory but is explicit. direnv-based tools (devbox, devenv, Nix flake)
-> only trigger per `.envrc`, so they don't handle nested version switching well.
+> **Monorepos with mixed versions:** In a monorepo with e.g. multiple sub projects with different tool versions, pkgx auto-detects the version from lockfiles with zero config. In contrast, mise requires a `.mise.toml` per subdirectory but is explicit. direnv-based tools (devbox, devenv, Nix flake) only trigger per `.envrc`, so they don't handle nested version switching well.
 
 ### devbox
 
-[devbox](https://www.jetify.com/devbox) creates isolated dev environments using
-Nix packages, configured via a simple JSON file. No Nix knowledge required.
+[devbox](https://www.jetify.com/devbox) creates isolated dev environments using Nix packages, configured via a simple JSON file. No Nix knowledge required.
 
 ```bash
 devbox init
 devbox add go_1_24 python@3.12
 ```
 
-This creates a `devbox.json`. Search for available packages at
-[nixhub.io](https://www.nixhub.io/).
+This creates a `devbox.json`. Search for available packages at [nixhub.io](https://www.nixhub.io/).
 
 Enter the environment or run a command inside it:
 
@@ -222,9 +194,7 @@ devbox run go version   # run a single command
 
 ### devenv
 
-[devenv](https://devenv.sh) provides Nix-native dev environments with built-in
-support for languages, services, processes, and containers. Configured via
-`devenv.nix` (requires some Nix knowledge).
+[devenv](https://devenv.sh) provides Nix-native dev environments with built-in support for languages, services, processes, and containers. Configured via `devenv.nix` (requires some Nix knowledge).
 
 ```bash
 devenv init
@@ -232,8 +202,7 @@ devenv init
 
 > [!NOTE]
 >
-> `devenv init` generates a `flake.nix` — don't run it in a project that already
-> has one. Instead, integrate devenv into your existing flake manually.
+> `devenv init` generates a `flake.nix` — don't run it in a project that already has one. Instead, integrate devenv into your existing flake manually.
 
 Example `devenv.nix`:
 
@@ -301,9 +270,7 @@ nix develop -c go version  # run a single command
 
 ### mise
 
-[mise](https://mise.jdx.dev) is a fast (Rust-based) polyglot tool version
-manager and task runner. It downloads tools directly from upstream (not via
-Nix), so new versions are available almost immediately.
+[mise](https://mise.jdx.dev) is a fast (Rust-based) polyglot tool version manager and task runner. It downloads tools directly from upstream (not via Nix), so new versions are available almost immediately.
 
 ```toml
 # .mise.toml
@@ -329,12 +296,9 @@ mise exec -- go version # run a command with mise-managed tools
 
 > [!NOTE]
 >
-> pkgx is not available in nixpkgs. On macOS it's installed via Homebrew, on
-> Linux via curl. See
-> [installation docs](https://docs.pkgx.sh/pkgx/installing-pkgx).
+> pkgx is not available in nixpkgs. On macOS it's installed via Homebrew, on Linux via curl. See [installation docs](https://docs.pkgx.sh/pkgx/installing-pkgx).
 
-[`pkgx`](https://docs.pkgx.sh) auto-detects tools from project files and runs
-them on demand. Add a `.pkgx.yml` to define explicit dependencies:
+[`pkgx`](https://docs.pkgx.sh) auto-detects tools from project files and runs them on demand. Add a `.pkgx.yml` to define explicit dependencies:
 
 ```yaml
 # .pkgx.yml
@@ -353,9 +317,7 @@ dev                     # enter an environment with all dependencies
 
 ### pocket
 
-[pocket](https://github.com/fredrikaverpil/pocket) is a Go-based task runner and
-package manager. Tasks and dependencies are defined in Go, and shims (`./pok`)
-are generated per directory to run them.
+[pocket](https://github.com/fredrikaverpil/pocket) is a Go-based task runner and package manager. Tasks and dependencies are defined in Go, and shims (`./pok`) are generated per directory to run them.
 
 ```bash
 pocket init
@@ -370,8 +332,7 @@ List and run tasks:
 
 ## Nix package pinning
 
-These techniques apply to any Nix-based setup (flake.nix, devenv, devbox with
-custom flakes).
+These techniques apply to any Nix-based setup (flake.nix, devenv, devbox with custom flakes).
 
 ### Use version-specific packages
 
@@ -396,9 +357,7 @@ packages = [
 
 ### Pin to specific nixpkgs commit
 
-If a specific version isn't available in stable or unstable, find a nixpkgs
-commit that has it. Use [nixpkgs-track](https://nixpkgs-track.kohi.dev/) or
-[Nixhub](https://www.nixhub.io/) to look up which commit introduced a version.
+If a specific version isn't available in stable or unstable, find a nixpkgs commit that has it. Use [nixpkgs-track](https://nixpkgs-track.kohi.dev/) or [Nixhub](https://www.nixhub.io/) to look up which commit introduced a version.
 
 ```nix
 inputs = {
@@ -431,8 +390,7 @@ go_1_25_1 = pkgs-unstable.go_1_25.overrideAttrs (oldAttrs: rec {
 
 ### Access packages from older nixpkgs releases
 
-Sometimes you need packages no longer available in current releases (e.g.,
-Python 3.9). Add an older nixpkgs as an input:
+Sometimes you need packages no longer available in current releases (e.g., Python 3.9). Add an older nixpkgs as an input:
 
 ```nix
 inputs = {
@@ -446,36 +404,22 @@ Then use `pkgs-python39.python39` in your packages list.
 
 - CLI stable: `nix search nixpkgs python3` or `nix search nixpkgs go`
 - CLI unstable: `nix search github:NixOS/nixpkgs/nixpkgs-unstable python3`
-- Online: [search.nixos.org/packages](https://search.nixos.org/packages) (toggle
-  e.g. "25.05" ↔ "unstable" channel)
+- Online: [search.nixos.org/packages](https://search.nixos.org/packages) (toggle e.g. "25.05" ↔ "unstable" channel)
 - Browse source: [github.com/NixOS/nixpkgs](https://github.com/NixOS/nixpkgs)
 
 ## Editor tooling (Neovim)
 
-LSPs, linters, formatters, and debug adapters used inside Neovim are managed by
-[Mason](https://github.com/mason-org/mason.nvim), configured in
-[`nvim-fredrik/lua/fredrik/plugins/core/mason.lua`](nvim-fredrik/lua/fredrik/plugins/core/mason.lua).
-Mason installs tools into its own isolated location
-(`~/.local/share/nvim-fredrik/mason/bin/`), separate from the shell environment.
+LSPs, linters, formatters, and debug adapters used inside Neovim are managed by [Mason](https://github.com/mason-org/mason.nvim), configured in [`nvim-fredrik/lua/fredrik/plugins/core/mason.lua`](nvim-fredrik/lua/fredrik/plugins/core/mason.lua). Mason installs tools into its own isolated location (`~/.local/share/nvim-fredrik/mason/bin/`), separate from the shell environment.
 
-Mason's `PATH` is set to `"append"`, meaning project-local tools (from Nix,
-mise, etc.) take precedence over Mason-installed versions. This lets per-project
-tooling override editor defaults automatically.
+Mason's `PATH` is set to `"append"`, meaning project-local tools (from Nix, mise, etc.) take precedence over Mason-installed versions. This lets per-project tooling override editor defaults automatically.
 
-Per-language tool declarations (which LSPs, formatters, linters to install) live
-in `nvim-fredrik/lua/fredrik/plugins/lang/*.lua` — e.g. `go.lua`, `python.lua`,
-`typescript.lua`. Many Neovim plugins expect specific tooling (e.g. a formatter
-plugin needs the formatter binary). Each plugin spec declares which Mason
-packages it needs — on startup, Mason automatically downloads and installs any
-missing tools. This means adding a new language setup is just a matter of
-writing the plugin spec; opening Neovim takes care of the rest.
+Per-language tool declarations (which LSPs, formatters, linters to install) live in `nvim-fredrik/lua/fredrik/plugins/lang/*.lua` — e.g. `go.lua`, `python.lua`, `typescript.lua`. Many Neovim plugins expect specific tooling (e.g. a formatter plugin needs the formatter binary). Each plugin spec declares which Mason packages it needs — on startup, Mason automatically downloads and installs any missing tools. This means adding a new language setup is just a matter of writing the plugin spec; opening Neovim takes care of the rest.
 
 ## LLM setup
 
 ### Claude Code
 
-Claude Code is installed as a Nix package from the `llm-agents` flake input
-(declared via `packageTools.llmAgents` in `nix/shared/home/common.nix`).
+Claude Code is installed as a Nix package from the `llm-agents` flake input (declared via `packageTools.llmAgents` in `nix/shared/home/common.nix`).
 
 - [Claude code docs](https://docs.claude.com/en/docs/claude-code)
 - Installation: Automatic on rebuild
@@ -484,15 +428,13 @@ Claude Code is installed as a Nix package from the `llm-agents` flake input
 
 #### Claude Work profile
 
-Use a separate Claude config dir for work contexts (different settings, skills,
-commands). Add to `~/code/work/.envrc`:
+Use a separate Claude config dir for work contexts (different settings, skills, commands). Add to `~/code/work/.envrc`:
 
 ```sh
 export CLAUDE_CONFIG_DIR="/Users/fredrik/.claude-work"
 ```
 
-This switches Claude Code to use `~/.claude-work/` (synced from
-`stow/shared/.claude-work/` via Stow) when working in that directory.
+This switches Claude Code to use `~/.claude-work/` (synced from `stow/shared/.claude-work/` via Stow) when working in that directory.
 
 ```sh
 # you can import mcp servers from claude desktop, into ~/.claude.json
@@ -501,8 +443,7 @@ claude mcp add-from-claude-desktop --scope user
 
 > [!NOTE]
 >
-> Claude Desktop does not support remote MCPs at the time of writing this. But
-> Claude Code does.
+> Claude Desktop does not support remote MCPs at the time of writing this. But Claude Code does.
 
 Examples of manual config in `~/.claude.json`:
 

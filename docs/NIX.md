@@ -117,9 +117,7 @@ sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake ~/.dotfiles#"$(h
 | Homebrew packages  | nix-darwin                      | System-wide | `nix/shared/system/darwin.nix`          |
 | Package overlays   | Nix                             | System-wide | `nix/shared/overlays/`                  |
 
-- NixOS configuration options:
-  [stable](https://nixos.org/manual/nixos/stable/options) |
-  [unstable](https://nixos.org/manual/nixos/unstable/options)
+- NixOS configuration options: [stable](https://nixos.org/manual/nixos/stable/options) | [unstable](https://nixos.org/manual/nixos/unstable/options)
 - [Home manager configuration options](https://nix-community.github.io/home-manager/options.xhtml)
 - [nix-darwin configuration options](https://nix-darwin.github.io/nix-darwin/manual/index.html)
 
@@ -134,12 +132,7 @@ sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake ~/.dotfiles#"$(h
 
 ### Package sources
 
-The intent here is to follow "unstable" sources on development machines, but
-keep servers anchored to a single, deliberately updated version source. The
-Raspberry Pi is anchored to the `nixos-raspberrypi` input: its nixpkgs,
-home-manager (`home-manager-rpi`) and disko all follow the nixpkgs pinned by
-that flake, so Darwin-motivated input updates cannot move the Pi, and kernel
-builds hit the nixos-raspberrypi.cachix.org binary cache.
+The intent here is to follow "unstable" sources on development machines, but keep servers anchored to a single, deliberately updated version source. The Raspberry Pi is anchored to the `nixos-raspberrypi` input: its nixpkgs, home-manager (`home-manager-rpi`) and disko all follow the nixpkgs pinned by that flake, so Darwin-motivated input updates cannot move the Pi, and kernel builds hit the nixos-raspberrypi.cachix.org binary cache.
 
 | Component    | macOS Source           | Raspberry Pi Source                       | Rationale                            |
 | ------------ | ---------------------- | ----------------------------------------- | ------------------------------------ |
@@ -147,16 +140,9 @@ builds hit the nixos-raspberrypi.cachix.org binary cache.
 | home-manager | master (unstable)      | release-25.11 (matches the pin)           | macOS: latest, Pi: one version anchor |
 | nix-darwin   | master (uses unstable) | -                                         | Always latest features               |
 
-The stable `nixpkgs` input (nixos-26.05) is only used for the Linux
-formatters and the `n` registry shortcut — not for any system.
+The stable `nixpkgs` input (nixos-26.05) is only used for the Linux formatters and the `n` registry shortcut — not for any system.
 
-RPi bootloader note: `nixos-raspberrypi` deprecates `kernelboot` in favor
-of the newer generational `kernel` bootloader. `rpi5-homelab` currently
-sets `boot.loader.raspberry-pi.bootloader = "kernelboot-legacy-unsupported"`
-to preserve the existing boot layout. Migrate to `kernel` only after checking
-or resizing `/boot/firmware`: the `kernel` bootloader stores generations under
-`/boot/firmware/nixos`, and upstream installer images use a 1024M firmware
-partition while this host currently declares 512M in `hardware.nix`.
+RPi bootloader note: `nixos-raspberrypi` deprecates `kernelboot` in favor of the newer generational `kernel` bootloader. `rpi5-homelab` currently sets `boot.loader.raspberry-pi.bootloader = "kernelboot-legacy-unsupported"` to preserve the existing boot layout. Migrate to `kernel` only after checking or resizing `/boot/firmware`: the `kernel` bootloader stores generations under `/boot/firmware/nixos`, and upstream installer images use a 1024M firmware partition while this host currently declares 512M in `hardware.nix`.
 
 Registry shortcuts:
 
@@ -172,8 +158,7 @@ nix shell u#nodejs_22
 
 ### Update inputs
 
-By default, rebuilding is "reproducible" and uses the locked `flake.lock`.
-Update inputs explicitly, then rebuild:
+By default, rebuilding is "reproducible" and uses the locked `flake.lock`. Update inputs explicitly, then rebuild:
 
 ```sh
 # Update unstable/Darwin-related inputs, then rebuild
@@ -196,27 +181,21 @@ npm-tools-upgrade
 
 When updating `nixos-raspberrypi`:
 
-1. Verify that the re-locked `nixpkgs` node in `flake.lock` matches the rev
-   pinned in nixos-raspberrypi's own `flake.lock` (Nix may re-resolve the
-   branch head instead, which breaks binary cache hits for the kernel).
-2. If their pin moved to a new NixOS release, bump the `home-manager-rpi`
-   branch in `flake.nix` to the matching release.
+1. Verify that the re-locked `nixpkgs` node in `flake.lock` matches the rev pinned in nixos-raspberrypi's own `flake.lock` (Nix may re-resolve the branch head instead, which breaks binary cache hits for the kernel).
+2. If their pin moved to a new NixOS release, bump the `home-manager-rpi` branch in `flake.nix` to the matching release.
 
 ### macOS permissions
 
-If you get errors about `com.apple.universalaccess` or system settings during
-nix-darwin activation:
+If you get errors about `com.apple.universalaccess` or system settings during nix-darwin activation:
 
 1. **Grant Full Disk Access to your terminal:**
    - Open System Settings > Privacy & Security > Full Disk Access
-   - Click + and add your terminal app (e.g.,
-     `/Applications/Utilities/Terminal.app`)
+   - Click + and add your terminal app (e.g., `/Applications/Utilities/Terminal.app`)
    - Enable the checkbox for your terminal
 
 ### SSL certificate issues (when choosing upstream Nix)
 
-If you get SSL certificate errors after switching from Determinate to upstream
-Nix:
+If you get SSL certificate errors after switching from Determinate to upstream Nix:
 
 ```sh
 # Fix broken certificate symlink

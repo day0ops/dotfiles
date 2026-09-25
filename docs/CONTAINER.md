@@ -1,15 +1,13 @@
 # Apple `container` CLI
 
-Tool for creating and running Linux containers as lightweight VMs on Apple
-silicon. Requires macOS 26+ and Apple silicon. OCI-compatible.
+Tool for creating and running Linux containers as lightweight VMs on Apple silicon. Requires macOS 26+ and Apple silicon. OCI-compatible.
 
 - GitHub: <https://github.com/apple/container>
 - Docs: <https://apple.github.io/container/documentation/>
 
 ## Docker-compatible clients
 
-Use `docker-backend` to point Docker-compatible clients at a backend by setting
-`DOCKER_HOST` and `TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE`.
+Use `docker-backend` to point Docker-compatible clients at a backend by setting `DOCKER_HOST` and `TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE`.
 
 ```bash
 eval "$(docker-backend env socktainer)"
@@ -35,25 +33,15 @@ container system status
 container system stop
 ```
 
-> `container system start` without `--enable-kernel-install` will interactively
-> prompt about kernel installation — use the flag to skip the prompt.
+> `container system start` without `--enable-kernel-install` will interactively prompt about kernel installation — use the flag to skip the prompt.
 
 ## `container system` behavior
 
-`container system start` starts Apple `container`'s own backend services via
-launchd. The main service is `container-apiserver`, and
-`container system status` reports whether that service is registered/running
-plus the configured install, app, and log roots.
+`container system start` starts Apple `container`'s own backend services via launchd. The main service is `container-apiserver`, and `container system status` reports whether that service is registered/running plus the configured install, app, and log roots.
 
-This backend is required for the `container` CLI itself. For example,
-`container run`, `container image pull`, and `container build` talk to Apple's
-apiserver after it has been started.
+This backend is required for the `container` CLI itself. For example, `container run`, `container image pull`, and `container build` talk to Apple's apiserver after it has been started.
 
-It does **not** expose a Docker Engine socket. Starting the system service does
-not create `/var/run/docker.sock`, `$HOME/.docker/run/docker.sock`, or any other
-Docker-compatible Unix socket that Docker clients can use through `DOCKER_HOST`.
-The service uses Apple `container`'s own API over macOS service plumbing instead
-of the Docker Engine HTTP API.
+It does **not** expose a Docker Engine socket. Starting the system service does not create `/var/run/docker.sock`, `$HOME/.docker/run/docker.sock`, or any other Docker-compatible Unix socket that Docker clients can use through `DOCKER_HOST`. The service uses Apple `container`'s own API over macOS service plumbing instead of the Docker Engine HTTP API.
 
 Use socktainer when a tool needs a Docker-compatible socket:
 
@@ -121,29 +109,17 @@ docker ps
 
 ### No `docker.sock` / Docker API compatibility
 
-`container system start` starts Apple's own `container-apiserver` daemon, but it
-does not expose a Docker-compatible API endpoint or Unix socket. Tools that
-connect directly to `/var/run/docker.sock` or another `DOCKER_HOST` socket (e.g.
-Testcontainers, lazydocker, Portainer, Compose) **will not work** against Apple
-`container` directly. The CLI surface is compatible; the daemon API is not.
+`container system start` starts Apple's own `container-apiserver` daemon, but it does not expose a Docker-compatible API endpoint or Unix socket. Tools that connect directly to `/var/run/docker.sock` or another `DOCKER_HOST` socket (e.g. Testcontainers, lazydocker, Portainer, Compose) **will not work** against Apple `container` directly. The CLI surface is compatible; the daemon API is not.
 
 Apple has explicitly closed this as **"not planned"** (issue #66):
 
-> _"At present we don't have plans to support a Docker compatible API for
-> managing the `container` tool, nor do we plan to implement a bridge from the
-> Docker API to the container services."_
+> _"At present we don't have plans to support a Docker compatible API for managing the `container` tool, nor do we plan to implement a bridge from the Docker API to the container services."_
 
-The maintainer did hint that the plugin architecture could support a
-community-built bridge. A detailed proposal for a read-only Docker REST API
-surface was submitted (issue #1476) by a fork (`full-chaos/container`) but was
-also closed.
+The maintainer did hint that the plugin architecture could support a community-built bridge. A detailed proposal for a read-only Docker REST API surface was submitted (issue #1476) by a fork (`full-chaos/container`) but was also closed.
 
 ### Workaround: socktainer
 
-[socktainer](https://github.com/socktainer/socktainer) is a community daemon
-that sits on top of Apple `container` and exposes a Docker-compatible REST API
-on a Unix socket (`~/.socktainer/container.sock`). This unblocks tools that talk
-to `/var/run/docker.sock`.
+[socktainer](https://github.com/socktainer/socktainer) is a community daemon that sits on top of Apple `container` and exposes a Docker-compatible REST API on a Unix socket (`~/.socktainer/container.sock`). This unblocks tools that talk to `/var/run/docker.sock`.
 
 Install and run:
 
@@ -162,8 +138,7 @@ docker compose up
 
 What works through socktainer (as of v0.12.x):
 
-- Container lifecycle: list, create, inspect, start, stop, restart, kill, wait,
-  attach, remove, prune
+- Container lifecycle: list, create, inspect, start, stop, restart, kill, wait, attach, remove, prune
 - Image lifecycle: list, pull, push, tag, inspect, delete, prune, build
 - Container archive (`docker cp`)
 - Auth (`docker login`)
@@ -176,15 +151,11 @@ What doesn't work yet (blocked on missing Apple `container` capabilities):
 - WebSocket attach
 - Most event types (exec, commit, copy, pause, oom, etc.)
 
-See [issue #14](https://github.com/socktainer/socktainer/issues/14) and
-[issue #90](https://github.com/socktainer/socktainer/issues/90) for the full API
-parity tables.
+See [issue #14](https://github.com/socktainer/socktainer/issues/14) and [issue #90](https://github.com/socktainer/socktainer/issues/90) for the full API parity tables.
 
 ### Testcontainers
 
-Testcontainers can connect to Apple `container` through socktainer, but it
-expects Docker-compatible network names that Apple `container` does not create
-by default.
+Testcontainers can connect to Apple `container` through socktainer, but it expects Docker-compatible network names that Apple `container` does not create by default.
 
 Create these compatibility networks once:
 
@@ -199,43 +170,24 @@ container network create \
 
 Why these are needed:
 
-- `bridge`: Testcontainers-go starts Ryuk with Docker's hard-coded `bridge`
-  network mode. Apple `container` only creates a `default` NAT network by
-  default, so Ryuk fails unless a network named `bridge` exists.
-- `reaper_default`: when Testcontainers-go cannot find Docker's default bridge
-  network, it creates or reuses `reaper_default` for container communication.
-  Creating it up front avoids a network-create path that has failed through
-  socktainer with a generic `Something went wrong` daemon error.
+- `bridge`: Testcontainers-go starts Ryuk with Docker's hard-coded `bridge` network mode. Apple `container` only creates a `default` NAT network by default, so Ryuk fails unless a network named `bridge` exists.
+- `reaper_default`: when Testcontainers-go cannot find Docker's default bridge network, it creates or reuses `reaper_default` for container communication. Creating it up front avoids a network-create path that has failed through socktainer with a generic `Something went wrong` daemon error.
 
 Blocking limitation:
 
-- Testcontainers-go v0.42 creates Ryuk containers named
-  `reaper_<64-char-session-id>`. Apple `container`/socktainer can fail to start
-  containers with long names and published ports with
-  `proxyVsock: failed to setup vsock proxy`. A shorter manually-created Ryuk
-  container works, but Testcontainers does not expose a supported way to shorten
-  the generated Ryuk container name.
+- Testcontainers-go v0.42 creates Ryuk containers named `reaper_<64-char-session-id>`. Apple `container`/socktainer can fail to start containers with long names and published ports with `proxyVsock: failed to setup vsock proxy`. A shorter manually-created Ryuk container works, but Testcontainers does not expose a supported way to shorten the generated Ryuk container name.
 
-For reliable Testcontainers support, prefer Docker, OrbStack, or Podman until
-Apple `container` and socktainer have better Docker API parity for Ryuk.
+For reliable Testcontainers support, prefer Docker, OrbStack, or Podman until Apple `container` and socktainer have better Docker API parity for Ryuk.
 
 **Relevant threads:**
 
-- [#66 — Expose Docker Engine API](https://github.com/apple/container/issues/66)
-  (closed: not planned)
-- [#131 — Support testcontainers?](https://github.com/apple/container/issues/131)
-  (closed)
-- [#1476 — HTTP REST surface compatible with Docker Engine API](https://github.com/apple/container/issues/1476)
-  (closed)
-- [Discussion #194](https://github.com/apple/container/discussions/194) —
-  community follow-up
-- [Discussion #320](https://github.com/apple/container/discussions/320) —
-  community follow-up
-- [socktainer](https://github.com/socktainer/socktainer) — third-party bridge
-  project (incomplete)
-- [containerization#733 — Add ID length restriction](https://github.com/apple/containerization/pull/733)
-  (merged: the 64-char `maxIDLength` limit and its rationale; adds validation on
-  top of already existing constraint?)
+- [#66 — Expose Docker Engine API](https://github.com/apple/container/issues/66) (closed: not planned)
+- [#131 — Support testcontainers?](https://github.com/apple/container/issues/131) (closed)
+- [#1476 — HTTP REST surface compatible with Docker Engine API](https://github.com/apple/container/issues/1476) (closed)
+- [Discussion #194](https://github.com/apple/container/discussions/194) — community follow-up
+- [Discussion #320](https://github.com/apple/container/discussions/320) — community follow-up
+- [socktainer](https://github.com/socktainer/socktainer) — third-party bridge project (incomplete)
+- [containerization#733 — Add ID length restriction](https://github.com/apple/containerization/pull/733) (merged: the 64-char `maxIDLength` limit and its rationale; adds validation on top of already existing constraint?)
 
 ### Quick/simple repro
 
