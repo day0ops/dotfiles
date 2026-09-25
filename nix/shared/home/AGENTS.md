@@ -9,7 +9,7 @@
 
 ### Never Do
 - Never use the em dash "—". Write the sentence in a way that does not need a dash. If not possible preference would be a plain dash "-" instead.
-- Never soft-wrap prose in CLAUDE.md, AGENTS.md, or similar docs by inserting line breaks mid-paragraph. Don't add newlines for no reason, let lines run long and wrap naturally.
+- Never soft-wrap prose in any markdown content by inserting line breaks mid-paragraph. Don't add newlines for no reason, let lines run long and wrap naturally.
 - Never write comments that simply repeat what the code does line-by-line (e.g., `// Increment x by 1`).
 - Avoid conversational filler or placeholders in comments. Keep them brief, punchy, and technical.
 
@@ -21,17 +21,14 @@
 
 ## Engineering principles
 
-- When making technical decisions, do not give much weight to development cost.
-  Instead, prefer quality, simplicity, robustness, scalability, and long term maintainability.
+- When making technical decisions, do not give much weight to development cost. Instead, prefer quality, simplicity, robustness, scalability, and long term maintainability.
 - For one-off or infrequent operational work, start with the simplest direct end-to-end path. Do not build wrappers, control planes, policy layers, custom verifiers, or automation unless the direct path exposes a concrete blocker or repeated need that justifies the added machinery.
 - Keep code comments concise and short for readability
 
 ## Testing and quality
 
-- When doing bug fixes, always start with reproducing the bug in an E2E setting as closely aligned with how an end user would experience it as possible.
-  This makes sure you find the real problem so your fix will actually solve it.
-- Hold a high standard for quality: when end-to-end testing a product, be picky about the UI and obsessed with pixel perfection; when you notice lint errors, test failures, or test flakiness, get them fixed.
-  This applies even when the issue is not directly related to what you are currently working on.
+- When doing bug fixes, always start with reproducing the bug in an E2E setting as closely aligned with how an end user would experience it as possible. This makes sure you find the real problem so your fix will actually solve it.
+- Hold a high standard for quality: when end-to-end testing a product, be picky about the UI and obsessed with pixel perfection; when you notice lint errors, test failures, or test flakiness, get them fixed. This applies even when the issue is not directly related to what you are currently working on.
 
 ## Agent behavior
 
@@ -41,30 +38,22 @@
 
 ### Planning the work
 
-Work back and forth with me, starting with your open questions and outline
-before writing the plan.
+Work back and forth with me, starting with your open questions and outline before writing the plan.
 
 ### Atomic, logical changes
 
-- Every set of code modifications that forms a distinct logical unit MUST live
-  in its own commit/change.
-- Each commit/change MUST be able to stand on its own: the code builds, tests
-  pass, and linters pass.
+- Every set of code modifications that forms a distinct logical unit MUST live in its own commit/change.
+- Each commit/change MUST be able to stand on its own: the code builds, tests pass, and linters pass.
 - Do NOT bundle unrelated modifications into a single commit/change.
-- Code modification related to feedback and reviews belong in the commit/change
-  that originally introduced them, not a separate commit/change.
+- Code modification related to feedback and reviews belong in the commit/change that originally introduced them, not a separate commit/change.
 
 ### Avoid over-editing
 
-IMPORTANT: Try to preserve the original code and the logic of the original code
-as much as possible. This is about not rewriting code you were not asked to
-touch, it does not override the instruction above to still fix quality issues
-you notice along the way.
+IMPORTANT: Try to preserve the original code and the logic of the original code as much as possible. This is about not rewriting code you were not asked to touch, it does not override the instruction above to still fix quality issues you notice along the way.
 
 ### Self review
 
-After implementing something, always look back and critically review what you
-did with the following in mind:
+After implementing something, always look back and critically review what you did with the following in mind:
 
 - Explicitness/simplicity over implicitness/cleverness
 - Consistent and systematic approach instead of fragmented and ad-hoc solutions
@@ -74,5 +63,4 @@ did with the following in mind:
 - Follow conventions by the language, ecosystem, open source community
 - Brittle or potentially buggy code
 
-If you discover apparent improvement areas, go back and refactor. When unsure,
-ask questions.
+If you discover apparent improvement areas, go back and refactor. When unsure, ask questions.
