@@ -30,7 +30,7 @@ EOF
 sudo launchctl kickstart -k system/org.nixos.nix-daemon
 
 # Clone configuration
-git clone https://github.com/fredrikaverpil/dotfiles.git ~/.dotfiles
+git clone https://github.com/day0ops/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 
 # Inspect available hosts
