@@ -29,6 +29,7 @@ in
 {
   imports = [
     ./llm-agents.nix
+    ./external-skills.nix
   ];
 
   config = {
@@ -41,6 +42,17 @@ in
       "gemini-cli"
       "herdr"
       "opencode"
+    ];
+
+    # Public Claude Code skills, cloned/updated fresh on each rebuild (see
+    # nix/shared/home/external-skills.nix); host configs can add more,
+    # e.g. a private repo with autoClone = false.
+    externalSkills = [
+      { url = "https://github.com/day0ops/claude-skills.git"; }
+      {
+        url = "https://github.com/emilkowalski/skills.git";
+        subdir = "skills";
+      }
     ];
 
     home.activation.handleDotfiles = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
