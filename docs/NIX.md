@@ -109,8 +109,7 @@ sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake ~/.dotfiles#"$(h
 | User dotfiles      | GNU Stow                        | Per-user    | `stow/`                                 |
 | User packages      | home-manager                    | Per-user    | `nix/shared/home/`                      |
 | User preferences   | home-manager                    | Per-user    | `nix/shared/home/` + host-specific      |
-| LLM agent CLIs     | llm-agents.nix flake input      | Per-user    | `nix/shared/home/package-tools.nix`     |
-| Package tools      | deno (npm), uv (Python)         | Per-user    | `nix/shared/home/package-tools.nix`     |
+| LLM agent CLIs     | llm-agents.nix flake input      | Per-user    | `nix/shared/home/llm-agents.nix`        |
 | Host configuration | nix-darwin/NixOS                | System-wide | `nix/hosts/*/configuration.nix`         |
 | System packages    | nix-darwin/NixOS                | System-wide | `nix/shared/system/`                    |
 | System settings    | nix-darwin/NixOS                | System-wide | `nix/shared/system/`                    |
@@ -173,10 +172,6 @@ nix flake update nixos-raspberrypi home-manager-rpi disko
 # Update only the root stable nixpkgs (Linux formatters + the `n` registry
 # shortcut; not used by any system configuration)
 nix flake update nixpkgs
-
-# After updating, refresh package-managed CLI tools
-uv tool upgrade --all
-npm-tools-upgrade
 ```
 
 When updating `nixos-raspberrypi`:

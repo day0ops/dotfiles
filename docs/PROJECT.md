@@ -419,7 +419,7 @@ Per-language tool declarations (which LSPs, formatters, linters to install) live
 
 ### Claude Code
 
-Claude Code is installed as a Nix package from the `llm-agents` flake input (declared via `packageTools.llmAgents` in `nix/shared/home/common.nix`).
+Claude Code is installed as a Nix package from the `llm-agents` flake input (declared via `llmAgents` in `nix/shared/home/common.nix`).
 
 - [Claude code docs](https://docs.claude.com/en/docs/claude-code)
 - Installation: Automatic on rebuild

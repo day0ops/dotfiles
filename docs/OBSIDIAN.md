@@ -23,7 +23,7 @@ For each vault:
 
 ### 2. Claude Desktop config: two `mcp-obsidian` entries
 
-`mcp-obsidian` is installed via `packageTools.uvTools` in `nix/shared/home/darwin.nix` (`uv tool install`, symlinked to `~/.local/bin`), so `command` below can call it directly rather than the `uvx mcp-obsidian` form shown in its own README.
+`mcp-obsidian` is installed via a `home.activation` block in `nix/shared/home/darwin.nix` (`uv tool install`, symlinked to `~/.local/bin`), so `command` below can call it directly rather than the `uvx mcp-obsidian` form shown in its own README.
 
 macOS config location: `~/Library/Application Support/Claude/claude_desktop_config.json`.
 

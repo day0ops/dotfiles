@@ -13,8 +13,6 @@ code in this repository.
 - **Update all flake inputs**: `nix flake update`, then rebuild
 - **Update only unstable-pinned inputs**: `nix flake update nixpkgs-unstable
   nix-darwin home-manager-unstable llm-agents dotfiles`, then rebuild
-- **Refresh package-managed CLI tools after an update**: `uv tool upgrade --all`
-  and `npm-tools-upgrade`
 - **Nix rebuild**: ask user to run this, NEVER run it yourself
 - **Nix validation**: `nix flake check` or `nix flake check --all-systems`
 - **Nix builds**: `nix build .#darwinConfigurations.<host>.system`, where `<host>` is the flake attribute (the machine's `hostname -s`, e.g. `Solo-System-KTalwatta`), not the `nix/hosts/` directory name
@@ -92,43 +90,33 @@ and **GNU Stow** for dotfile symlinking.
   Nix (Linux)
 - **LLM agent CLIs**: Packaged agents (claude-code, codex, gemini-cli,
   opencode, pi, ...) come from the `llm-agents` flake input
-  (numtide/llm-agents.nix) and are declared via `packageTools.llmAgents`
-  (mergeable across common → platform → host configs). Do not make this input
-  follow another nixpkgs — it is built/cached against its own pin
-  (cache.numtide.com). Update via `nix flake update llm-agents`, then rebuild
+  (numtide/llm-agents.nix) and are declared via the `llmAgents` option in
+  `nix/shared/home/llm-agents.nix` (mergeable across common → platform → host
+  configs). Do not make this input follow another nixpkgs — it is
+  built/cached against its own pin (cache.numtide.com). Update via
+  `nix flake update llm-agents`, then rebuild
 - **No curl|bash installers in activation**: AI/agent CLIs must come from
   llm-agents (patched, cached), not native installers. Prebuilt glibc
   binaries cannot run on NixOS (stub-ld), and install-if-missing activation
   scripts make rebuilds depend on third-party servers.
 
-### Package-Managed Tools (npm and Python)
+### CLI tools outside nixpkgs
 
-For CLI tools installed via deno (npm) or uv (Python). These require an
-explicit `uv tool upgrade --all` / `npm-tools-upgrade` after updating flake
-inputs to actually pick up new versions.
+No mechanism installs CLI tools via a language package manager (npm, uv,
+...) — a tool must come from nixpkgs or the `llm-agents` flake. Wheels and
+prebuilt npm binaries are glibc-linked and fail on NixOS
+(`libstdc++.so.6: cannot open shared object file`). For a one-off run, use
+`deno run -A npm:<pkg>` or `uvx <pkg>` instead of installing.
 
-- **Module**: `nix/shared/home/package-tools.nix`
-- **Behavior**: Installed on each rebuild; upgraded manually via
-  `uv tool upgrade --all` / `npm-tools-upgrade`
-
-**Adding npm tools:**
-
-1. Add a `{ package, bin }` entry to `packageTools.npmPackages` in the
-   appropriate Nix config (`bin` is the package.json "bin" name)
-2. Rebuild to install
-3. Update later: `npm-tools-upgrade`
-
-**Adding Python CLI tools (via uv):**
-
-1. Add a tool entry to `packageTools.uvTools` in the appropriate Nix config
-2. Rebuild to install
-3. Update later: `uv tool upgrade --all`
+Exception: `mcp-obsidian` (Claude Desktop's Obsidian bridge, Darwin-only,
+see `nix/shared/home/darwin.nix` and `docs/OBSIDIAN.md`) is uv-installed
+directly — it isn't in nixpkgs or llm-agents, and Darwin has no glibc issue.
 
 **Adding LLM agent CLIs:**
 
 1. Add the package name (an attribute of the llm-agents flake's `packages`,
-   e.g. `"claude-code"`) to `packageTools.llmAgents` at the appropriate config
-   level (common, platform, or host user config)
+   e.g. `"claude-code"`) to `llmAgents` at the appropriate config level
+   (common, platform, or host user config)
 2. Rebuild to install
 3. Update later: `nix flake update llm-agents`, then rebuild
 

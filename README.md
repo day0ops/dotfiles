@@ -4,7 +4,7 @@ Personal dotfiles, managed in three layers:
 
 - **[Nix](https://nixos.org)** (`nix/`) — system configuration and packages, pinned by `flake.lock` and applied with a rebuild. Fully reproducible.
 - **Stow** (`stow/`) — dotfiles symlinked into `$HOME` with [GNU Stow](https://www.gnu.org/software/stow/). Changes take effect immediately, no rebuild needed.
-- **Package tools** — CLI tools installed by their own package managers (currently `uv` for Python, `deno` for npm). Nix declares _which_ tools and installs missing ones on rebuild, but versions are unpinned and upgraded manually.
+- **Homebrew** (macOS) — GUI apps and Mac App Store apps. Nix declares _which_ packages and a rebuild installs or removes to match, but versions are unpinned and upgraded manually.
 
 ## Quickstart
 
@@ -65,20 +65,11 @@ The shell entrypoint is `stow/shared/.zshrc`, which sources `stow/shared/.zshrc_
 
 See [Project config](docs/PROJECT.md) for details on shell initialization, direnv, and per-project tooling.
 
-### Package tools
+### Homebrew
 
-> [!NOTE]
->
-> I'm not happy with how this is designed, see [dotfiles#202](https://github.com/fredrikaverpil/dotfiles/issues/202).
+`nix/shared/system/darwin.nix` declares Homebrew taps, brews, casks, and Mac App Store apps; a rebuild installs or removes to match. Versions are unpinned — upgrade manually with `brew upgrade`.
 
-CLI tools that come from language ecosystems rather than nixpkgs are declared in Nix (see `nix/shared/home/package-tools.nix`) but installed by their native package manager. A rebuild installs anything missing; upgrades are manual:
-
-```sh
-uv tool upgrade --all   # Python tools (uv)
-npm-tools-upgrade       # npm tools (deno)
-```
-
-LLM agent CLIs (claude-code, opencode,...) are the exception: they are plain Nix packages from the `llm-agents` flake input, upgraded via `nix flake update llm-agents` + rebuild.
+LLM agent CLIs (claude-code, opencode,...) are plain Nix packages from the `llm-agents` flake input, upgraded via `nix flake update llm-agents` + rebuild. `mcp-obsidian` (Claude Desktop's Obsidian bridge, Darwin-only) is installed directly via `uv tool install` — see `nix/shared/home/darwin.nix`.
 
 ## Other READMEs and references
 

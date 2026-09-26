@@ -24,15 +24,7 @@ in
     TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE = "/run/user/$UID/podman/podman.sock";
   };
 
-  packageTools.npmPackages = [
-    {
-      package = "@googleworkspace/cli";
-      bin = "gws";
-    }
-  ];
-  packageTools.uvTools = [ ];
-
-  packageTools.llmAgents = [
+  llmAgents = [
     "antigravity-cli"
   ];
 
