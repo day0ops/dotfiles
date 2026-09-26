@@ -1,0 +1,6 @@
+[submodule "claude-skills"]
+	path = claude-skills
+	url = https://github.com/day0ops/claude-skills.git
+[submodule "emilkowalski-skills"]
+	path = emilkowalski-skills
+	url = https://github.com/emilkowalski/skills.git

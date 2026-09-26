@@ -31,17 +31,25 @@
   # Bob config path (unified across macOS/Linux, since defaults differ)
   home.sessionVariables.BOB_CONFIG = "$HOME/.config/bob/config.toml";
 
-  packageTools.npmPackages = [ ];
-  packageTools.uvTools = [
-    { package = "mcp-obsidian"; } # Claude Desktop <-> Obsidian Local REST API, see docs/OBSIDIAN.md
-  ];
-
-  packageTools.llmAgents = [
+  llmAgents = [
     # "amp"
     # "codex"
     # "copilot-cli"
     # "mistral-vibe"
   ];
+
+  # mcp-obsidian: Claude Desktop <-> Obsidian bridge, see docs/OBSIDIAN.md.
+  # Not in nixpkgs/llm-agents, so uv-installed directly (Darwin-only, so the
+  # NixOS glibc issue that killed the old packageTools mechanism doesn't apply).
+  # Upgrade: `uv tool upgrade mcp-obsidian`.
+  home.activation.mcpObsidian = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    if ${pkgs.uv}/bin/uv tool list 2>/dev/null | grep -q "^mcp-obsidian "; then
+      echo "Already installed: mcp-obsidian"
+    else
+      echo "Installing mcp-obsidian..."
+      $DRY_RUN_CMD ${pkgs.uv}/bin/uv tool install --python ${pkgs.python3}/bin/python mcp-obsidian
+    fi
+  '';
 
   programs = {
   };
