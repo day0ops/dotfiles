@@ -67,8 +67,6 @@ and **GNU Stow** for dotfile symlinking.
   - `shared/`: Cross-platform dotfiles
   - `Darwin/`: macOS-specific dotfiles
   - `Linux/`: Linux-specific dotfiles
-- `claude-skills/`: Git submodule of the public [day0ops/claude-skills](https://github.com/day0ops/claude-skills) repo; skill directories inside it are symlinked via Stow into both `~/.claude/skills` and `~/.claude-work/skills` (see `docs/PROJECT.md`)
-- `emilkowalski-skills/`: Git submodule of the public [emilkowalski/skills](https://github.com/emilkowalski/skills) repo (third-party design/animation skills); same symlink treatment as `claude-skills/`, but its skills live one level deeper, under `skills/`
 - `docs/`: Setup guides and architecture reference (Nix, Git/Stow, Containers,
   Project config)
 - `extras/`: One-off platform-specific extras (installers, templates)

@@ -436,16 +436,25 @@ export CLAUDE_CONFIG_DIR="/Users/fredrik/.claude-work"
 
 This switches Claude Code to use `~/.claude-work/` (synced from `stow/shared/.claude-work/` via Stow) when working in that directory.
 
-##### Public, shared skills
+##### External skills
 
-Skills with no confidential content live in separate public repos, added here as git submodules and symlinked via Stow into both `~/.claude/skills` and `~/.claude-work/skills` (see e.g. `stow/shared/.claude/skills/obsidian`, a symlink into a submodule), so a skill defined there is available in both Claude Code profiles. `git submodule update --init --recursive` (run automatically by `home.activation.handleDotfiles`) keeps every submodule in sync — no manual clone step needed.
+Skills from other git repos (`nix/shared/home/external-skills.nix`, option `externalSkills`) are cloned to `~/.cache/claude-external-skills/<name>` and `git pull`ed fresh on every rebuild instead of pinned via git submodule, then symlinked via Stow into `~/.claude/skills` and/or `~/.claude-work/skills` per entry:
 
-- [day0ops/claude-skills](https://github.com/day0ops/claude-skills) (`claude-skills/`) — personal skills, flat layout (`<skill>/SKILL.md`)
-- [emilkowalski/skills](https://github.com/emilkowalski/skills) (`emilkowalski-skills/`) — third-party design/animation skills, nested one level deeper (`skills/<skill>/SKILL.md`)
+```nix
+externalSkills = [
+  { url = "https://github.com/day0ops/claude-skills.git"; }
+  { url = "https://github.com/emilkowalski/skills.git"; subdir = "skills"; }
+  { url = "https://github.com/your-org/private-skills.git"; autoClone = false; targets = [ "work" ]; }
+];
+```
 
-##### Private, company-specific skills
+- `subdir` — path within the repo containing one directory per skill (default `.`)
+- `autoClone` — clone automatically if missing (default `true`; set `false` for private repos that need interactive auth — clone once by hand, it's still auto-updated via `git pull` after that)
+- `targets` — which profiles to link into: `"personal"` (`~/.claude/skills`) and/or `"work"` (`~/.claude-work/skills`)
 
-Skills that reference internal tools or business-confidential detail don't belong in this public repo, or in the public `claude-skills` submodule above. Keep them in a separate private repo instead (e.g. `your-org/private-claude-skills`), clone it once to `~/.solo-claude-skills`, and add a `home.activation` script to your user's home-manager config (`handleSoloClaudeSkills` in this repo) that links every skill directory it finds there into `~/.claude-work/skills` on each rebuild. Have it link only, never clone — if the local clone is missing, no-op with a message instead of failing the rebuild, so machines without access to the private repo aren't broken.
+A failed clone/pull/link is a warning, not a failed rebuild — a machine offline or without access to a private repo just keeps whatever's already cached (or skips that entry entirely if nothing's cached yet).
+
+Current entries: [day0ops/claude-skills](https://github.com/day0ops/claude-skills) (personal, both profiles), [emilkowalski/skills](https://github.com/emilkowalski/skills) (third-party design/animation, both profiles), and a private Solo.io-specific repo (`autoClone = false`, work profile only, in `nix/hosts/work/users/kasunt.nix`).
 
 ```sh
 # you can import mcp servers from claude desktop, into ~/.claude.json

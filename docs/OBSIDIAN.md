@@ -1,6 +1,6 @@
 # Obsidian
 
-Both vaults (personal and work) live in iCloud Drive at `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/{personal,work}`, synced by Obsidian itself. Claude Code already treats them as a wiki via the `obsidian` skills (`stow/shared/.claude/skills/obsidian`, `stow/shared/.claude-work/skills/obsidian`), reading and writing plain markdown files directly on disk. This page covers the parts of that setup that are manual/one-time and don't belong in Nix or Stow: giving **Claude Desktop** the same access, and backing up the vaults.
+Both vaults (personal and work) live in iCloud Drive at `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/{personal,work}`, synced by Obsidian itself. Claude Code already treats them as a wiki via the `obsidian` skill (from the [day0ops/claude-skills](https://github.com/day0ops/claude-skills) external skill source, see `docs/PROJECT.md`, linked into both `~/.claude/skills/obsidian` and `~/.claude-work/skills/obsidian`), reading and writing plain markdown files directly on disk. This page covers the parts of that setup that are manual/one-time and don't belong in Nix or Stow: giving **Claude Desktop** the same access, and backing up the vaults.
 
 ## Claude Desktop integration
 
@@ -65,8 +65,8 @@ The Local REST API plugin only serves requests for the vault it's running in, so
 Desktop only executes Python/Node inside a skill's `scripts/` folder, and this skill's `scripts/lint.sh` is bash, so the packaged zip should contain `SKILL.md` only:
 
 ```bash
-cd stow/shared/.claude/skills/obsidian && zip obsidian-personal-skill.zip SKILL.md
-cd stow/shared/.claude-work/skills/obsidian && zip obsidian-work-skill.zip SKILL.md
+cd ~/.claude/skills/obsidian && zip obsidian-personal-skill.zip SKILL.md
+cd ~/.claude-work/skills/obsidian && zip obsidian-work-skill.zip SKILL.md
 ```
 
 Upload each zip under Settings > Features > Skills. Re-run and re-upload whenever `SKILL.md` changes meaningfully; Desktop doesn't read the file live from disk.
