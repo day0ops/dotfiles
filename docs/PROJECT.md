@@ -438,7 +438,10 @@ This switches Claude Code to use `~/.claude-work/` (synced from `stow/shared/.cl
 
 ##### Public, shared skills
 
-Skills with no confidential content live in a separate public repo, [day0ops/claude-skills](https://github.com/day0ops/claude-skills), added here as a git submodule at `claude-skills/`. Every directory inside it is symlinked via Stow into both `~/.claude/skills` and `~/.claude-work/skills` (see e.g. `stow/shared/.claude/skills/obsidian`, a symlink into the submodule), so a skill defined there is available in both Claude Code profiles. `git submodule update --init --recursive` (run automatically by `home.activation.handleDotfiles`) keeps the submodule in sync — no manual clone step needed.
+Skills with no confidential content live in separate public repos, added here as git submodules and symlinked via Stow into both `~/.claude/skills` and `~/.claude-work/skills` (see e.g. `stow/shared/.claude/skills/obsidian`, a symlink into a submodule), so a skill defined there is available in both Claude Code profiles. `git submodule update --init --recursive` (run automatically by `home.activation.handleDotfiles`) keeps every submodule in sync — no manual clone step needed.
+
+- [day0ops/claude-skills](https://github.com/day0ops/claude-skills) (`claude-skills/`) — personal skills, flat layout (`<skill>/SKILL.md`)
+- [emilkowalski/skills](https://github.com/emilkowalski/skills) (`emilkowalski-skills/`) — third-party design/animation skills, nested one level deeper (`skills/<skill>/SKILL.md`)
 
 ##### Private, company-specific skills
 
