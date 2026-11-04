@@ -51,17 +51,17 @@ let
       fi
 
       if [ "$CLONE_OK" = "1" ] && [ -d "${skillsDir}" ]; then
-        $DRY_RUN_CMD ${pkgs.coreutils}/bin/mkdir -p ${
-          lib.concatStringsSep " " (map (t: "\"${t}\"") targets)
-        }
-        SKILL_DIRS=$(cd "${skillsDir}" && ${pkgs.findutils}/bin/find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n')
+        SKILL_DIRS=$(cd "${skillsDir}" && ${pkgs.findutils}/bin/find . -mindepth 1 -maxdepth 1 -type d -exec ${pkgs.coreutils}/bin/test -f "{}/SKILL.md" \; -printf '%f\n')
         ${lib.concatMapStringsSep "\n" (target: ''
-          if ! $DRY_RUN_CMD ${pkgs.stow}/bin/stow \
-            --dir="${skillsDir}" --target="${target}" \
-            --restow --no-folding --adopt \
-            $SKILL_DIRS; then
-            echo "Warning: failed to link ${name} into ${target}"
-          fi
+          for skill in $SKILL_DIRS; do
+            $DRY_RUN_CMD ${pkgs.coreutils}/bin/mkdir -p "${target}/$skill"
+            if ! $DRY_RUN_CMD ${pkgs.stow}/bin/stow \
+              --dir="${skillsDir}" --target="${target}/$skill" \
+              --restow --no-folding --adopt \
+              "$skill"; then
+              echo "Warning: failed to link ${name}/$skill into ${target}"
+            fi
+          done
         '') targets}
       fi
     '';
