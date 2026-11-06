@@ -4,14 +4,6 @@
       "type": "http",
       "url": "https://support-agent-tools.is.solo.io/mcp"
     },
-    "search-docs": {
-      "type": "http",
-      "url": "https://searchdocs.is.solo.io/mcp"
-    },
-    "slack-history": {
-      "type": "http",
-      "url": "https://slack-history-mcp.is.solo.io/mcp"
-    },
     "customer360": {
       "type": "http",
       "url": "https://mcp.cs.solo.dev/mcp"
@@ -21,6 +13,13 @@
       "url": "https://siesta.fe.solo.io/mcp",
       "headers": {
         "Authorization": "Bearer ${SIESTA_PAT}"
+      }
+    },
+    "hivemind": {
+      "type": "http",
+      "url": "https://hivemind.solo.io/api/mcp?transport=sse",
+      "headers": {
+        "x-api-key": "${HIVEMIND_PAT}"
       }
     }
   }
