@@ -1,5 +1,7 @@
 # dotfiles 🗃️
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 Personal dotfiles, managed in three layers:
 
 - **[Nix](https://nixos.org)** (`nix/`) — system configuration and packages, pinned by `flake.lock` and applied with a rebuild. Fully reproducible.

@@ -17,9 +17,9 @@
     },
     "hivemind": {
       "type": "http",
-      "url": "https://hivemind.solo.io/api/mcp",
+      "url": "https://hivemind.solo.io/api/mcp?transport=sse",
       "headers": {
-        "x-api-key": "${HIVEMIND_API_KEY}"
+        "x-api-key": "${HIVEMIND_PAT}"
       }
     }
   }
