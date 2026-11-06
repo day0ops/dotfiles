@@ -39,6 +39,7 @@ let
 
   nonDevelopmentCasks = [
     "appcleaner"
+    "asana"
     "claude"
     "domzilla-caffeine"
     "drawio"
@@ -124,6 +125,8 @@ in
 
         # Misc
         "agg" # asciinema to gif
+        "jmeter"
+        "talosctl"
       ]
       ++ config.host.extraBrews;
 

@@ -5,7 +5,7 @@ export ENTERPRISE_GLOO_MESH_LICENSE="$(genlicense.sh -product gloo-mesh -enterpr
 # Solo.io enterprise product licenses
 export ENTERPRISE_AGENTGATEWAY_LICENSE=$(genlicense.sh -product agentgateway -enterprise -days 365)
 export ENTERPRISE_KAGENT_LICENSE=$(genlicense.sh -product kagent -enterprise -days 365)
-export ENTERPRISE_KGATEWAY_LICENSE="`genlicense.sh -product gloo -enterprise -days 365`"
+export ENTERPRISE_KGATEWAY_LICENSE="`genlicense.sh -product gloo -enterprise -days 365 -addons portal -addonTiers ent -daysToAddonExpiration 365`"
 export ENTERPRISE_GLOO_GATEWAY_LICENSE="`genlicense.sh -product gloo -enterprise -days 365`"
 export ENTERPRISE_AGENTREGISTRY_LICENSE=$(genlicense.sh -product agentregistry -enterprise -days 365)
 export ENTERPRISE_GLOO_CORE_LICENSE=$(genlicense.sh -product gloo-core -enterprise -days 365)
