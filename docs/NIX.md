@@ -153,6 +153,20 @@ nix shell n#neovim
 nix shell u#nodejs_22
 ```
 
+## Rex preferences
+
+Rex's explicitly saved Mac app preferences are declared in `nix/shared/home/darwin.nix` under `targets.darwin.defaults."com.superlogical.rex"`. Home Manager reapplies them on every macOS rebuild, including `dotfiles nix apply`. This includes appearance, agent session naming, server options, and automatic updates. Session IDs, activity history, window positions, connection caches, and onboarding state remain local.
+
+To capture a later change made in Rex's Settings, inspect the saved values and update the matching Nix entries before the next apply:
+
+```sh
+defaults read com.superlogical.rex
+```
+
+Quit Rex before applying and reopen it afterward so it reads the restored preferences. The Nix values are the source of truth; changing a managed preference in Rex does not update the repository. Preferences that Rex has not explicitly saved continue to use the app's defaults. Rex itself must already be installed.
+
+Keybindings and custom actions are separate from app preferences. Rex reads them from `~/.config/rex/init.lua`; if needed, manage that file through `stow/shared/.config/rex/`. Reload Lua changes with `rex config reload`. See the [Rex configuration documentation](https://www.superlogical.com/rex/docs/customize/config) and [Mac settings reference](https://www.superlogical.com/rex/docs/reference/mac-settings).
+
 ## Troubleshooting
 
 ### Update inputs

@@ -69,6 +69,33 @@
     # to ensure they don't affect other users on the system
 
     # Application-specific preferences
+    # Keep portable Rex preferences here; session IDs, window frames, and caches stay local.
+    "com.superlogical.rex" = {
+      "Workspace.animationStyle" = "snappy";
+      "Workspace.darkThemeID" = "saffron-nightfall";
+      "Workspace.inactivePaneFadeMode" = "both";
+      "Workspace.interfaceStyle" = "useTheme";
+      "Workspace.lightThemeID" = "merino-light";
+      "Workspace.paneDensity" = "compact";
+      "Workspace.shellIconTheme" = "themedAlt";
+      "Workspace.showsActivePaneBorder" = true;
+      "Workspace.sidebarPosition" = "left";
+      "Workspace.sidebarShowsActivity" = false;
+      "Workspace.tabIconTintMode" = "off";
+      "Workspace.tabStyle" = "vertical";
+      "Workspace.terminalFontPointSize" = 11.0;
+      "Workspace.terminalFontSmoothing" = true;
+      "Workspace.usesStandardInactiveWindowPaneStyles" = true;
+      "rex.agents.names-sessions" = true;
+      "rex.server.automatic-restart-enabled" = true;
+      "rex.server.block-plugin-reload-enabled" = false;
+      "rex.server.run-mode" = "bundled";
+      "rex.server.web-client-origin-patterns" = [ "https://rex.superlogical.com" ];
+      SUAutomaticallyUpdate = true;
+      SUEnableAutomaticChecks = true;
+      SUScheduledCheckInterval = 86400.0;
+    };
+
     "com.apple.desktopservices" = {
       # Prevent .DS_Store files on network and USB drives
       DSDontWriteNetworkStores = true;

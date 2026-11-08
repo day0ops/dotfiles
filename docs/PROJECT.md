@@ -417,6 +417,19 @@ Per-language tool declarations (which LSPs, formatters, linters to install) live
 
 ## LLM setup
 
+### Codex
+
+Codex is installed through the `llm-agents` flake input. Its user configuration lives in [`stow/shared/.codex/config.toml`](../stow/shared/.codex/config.toml), linked to `~/.codex/config.toml` by Stow.
+
+- GPT-6.1 Sol with high reasoning effort is the default model.
+- Command approval prompts are disabled. Workspace sandbox restrictions still apply; blocked actions fail without prompting. Network access is enabled for dependency downloads and developer tools.
+- Live web search is enabled. Projects without `AGENTS.md` can use `CLAUDE.md` for instructions. Shared global instructions already come from `nix/shared/home/AGENTS.md` through Home Manager.
+- Analytics, feedback submission, and OpenTelemetry log, trace, and metrics exports are disabled. These settings do not change account-level data controls or local session storage.
+
+Apply through the normal Stow workflow in the [README](../README.md#stow), then start a new Codex session. If `~/.codex/config.toml` is an existing regular file, back it up first and merge any machine-specific settings deliberately: `stow --adopt` would replace the repository defaults with that file's contents. Keep credentials, session data, and machine-specific trust entries outside version control.
+
+Settings are documented in the [official configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference).
+
 ### Claude Code
 
 Claude Code is installed as a Nix package from the `llm-agents` flake input (declared via `llmAgents` in `nix/shared/home/common.nix`).
