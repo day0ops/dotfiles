@@ -28,17 +28,20 @@ in
     "antigravity-cli"
   ];
 
-  # Solo.io-specific skills: private repo, not auto-cloned (needs auth).
-  # Clone it once to ~/.cache/claude-external-skills/solo-claude-skills;
-  # after that it's auto-updated via `git pull` on each rebuild, same as
-  # the public entries in common.nix.
-  externalSkills = [
-    {
+  # Both skill repos are also checked out locally under ~/Projects for
+  # active development; point localPath at those checkouts so edits show
+  # up immediately instead of going through a separate pulled clone.
+  externalSkills = {
+    # Solo.io-specific skills: private repo, not auto-cloned (needs auth).
+    solo-claude-skills = {
       url = "https://github.com/day0ops/solo-claude-skills.git";
       autoClone = false;
       targets = [ "work" ];
-    }
-  ];
+      localPath = "$HOME/Projects/personal/opensource/github.com/day0ops/solo-claude-skills";
+    };
+
+    claude-skills.localPath = "$HOME/Projects/personal/opensource/github.com/day0ops/claude-skills";
+  };
 
   home.file = {
   };

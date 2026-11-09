@@ -5,11 +5,21 @@
 # and ~/.claude-work/skills.
 #
 # Usage:
-#   externalSkills = [
-#     { url = "https://github.com/day0ops/claude-skills.git"; }
-#     { url = "https://github.com/emilkowalski/skills.git"; subdir = "skills"; }
-#     { url = "https://github.com/your-org/private-skills.git"; autoClone = false; }
-#   ];
+#   externalSkills = {
+#     claude-skills.url = "https://github.com/day0ops/claude-skills.git";
+#     emilkowalski-skills = {
+#       url = "https://github.com/emilkowalski/skills.git";
+#       subdir = "skills";
+#     };
+#     private-skills = {
+#       url = "https://github.com/your-org/private-skills.git";
+#       autoClone = false;
+#     };
+#   };
+#
+# Keyed by name so a host-specific config can override just one field
+# (e.g. `externalSkills.claude-skills.localPath = ...;`) while inheriting
+# the rest from a shared entry defined elsewhere.
 {
   config,
   lib,
@@ -30,27 +40,11 @@ let
       urlParts = lib.reverseList (lib.splitString "/" (lib.removeSuffix ".git" entry.url));
       name = "${lib.elemAt urlParts 1}-${lib.elemAt urlParts 0}";
       cacheDir = "${cacheRoot}/${name}";
-      skillsDir = if entry.subdir == "." then cacheDir else "${cacheDir}/${entry.subdir}";
+      skillsRoot = if entry.localPath != null then entry.localPath else cacheDir;
+      skillsDir = if entry.subdir == "." then skillsRoot else "${skillsRoot}/${entry.subdir}";
       targets = map (t: targetDirs.${t}) entry.targets;
-    in
-    ''
-      CLONE_OK=1
-      if [ -d "${cacheDir}/.git" ]; then
-        echo "Updating ${name}..."
-        $DRY_RUN_CMD ${pkgs.git}/bin/git -C "${cacheDir}" pull --ff-only \
-          || echo "Warning: failed to update ${name}, using cached copy"
-      elif [ "${lib.boolToString entry.autoClone}" = "true" ]; then
-        echo "Cloning ${name}..."
-        if ! $DRY_RUN_CMD ${pkgs.git}/bin/git clone "${entry.url}" "${cacheDir}"; then
-          echo "Warning: failed to clone ${name}, skipping"
-          CLONE_OK=0
-        fi
-      else
-        echo "${name} not cloned at ${cacheDir}, skipping (clone it manually)"
-        CLONE_OK=0
-      fi
 
-      if [ "$CLONE_OK" = "1" ] && [ -d "${skillsDir}" ]; then
+      linkSkills = ''
         SKILL_DIRS=$(cd "${skillsDir}" && ${pkgs.findutils}/bin/find . -mindepth 1 -maxdepth 1 -type d -exec ${pkgs.coreutils}/bin/test -f "{}/SKILL.md" \; -printf '%f\n')
         ${lib.concatMapStringsSep "\n" (target: ''
           for skill in $SKILL_DIRS; do
@@ -63,12 +57,43 @@ let
             fi
           done
         '') targets}
-      fi
-    '';
+      '';
+    in
+    if entry.localPath != null then
+      ''
+        echo "${name}: using local checkout at ${entry.localPath}, skipping clone/pull"
+        if [ -d "${skillsDir}" ]; then
+          ${linkSkills}
+        else
+          echo "Warning: ${name} local path ${skillsDir} not found, skipping"
+        fi
+      ''
+    else
+      ''
+        CLONE_OK=1
+        if [ -d "${cacheDir}/.git" ]; then
+          echo "Updating ${name}..."
+          $DRY_RUN_CMD ${pkgs.git}/bin/git -C "${cacheDir}" pull --ff-only \
+            || echo "Warning: failed to update ${name}, using cached copy"
+        elif [ "${lib.boolToString entry.autoClone}" = "true" ]; then
+          echo "Cloning ${name}..."
+          if ! $DRY_RUN_CMD ${pkgs.git}/bin/git clone "${entry.url}" "${cacheDir}"; then
+            echo "Warning: failed to clone ${name}, skipping"
+            CLONE_OK=0
+          fi
+        else
+          echo "${name} not cloned at ${cacheDir}, skipping (clone it manually)"
+          CLONE_OK=0
+        fi
+
+        if [ "$CLONE_OK" = "1" ] && [ -d "${skillsDir}" ]; then
+          ${linkSkills}
+        fi
+      '';
 in
 {
   options.externalSkills = lib.mkOption {
-    type = lib.types.listOf (
+    type = lib.types.attrsOf (
       lib.types.submodule {
         options = {
           url = lib.mkOption {
@@ -90,6 +115,19 @@ in
               via `git pull` on every rebuild after that).
             '';
           };
+          localPath = lib.mkOption {
+            type = lib.types.nullOr lib.types.str;
+            default = null;
+            description = ''
+              Use an existing local checkout instead of a managed clone
+              under ~/.cache/claude-external-skills. Skips the clone/pull
+              step entirely and links skills straight from this path, so
+              edits in the checkout show up without a push/pull
+              round-trip. Typically set by a host-specific config to
+              override just this field on an entry whose `url` etc. is
+              defined elsewhere.
+            '';
+          };
           targets = lib.mkOption {
             type = lib.types.listOf (
               lib.types.enum [
@@ -109,10 +147,10 @@ in
         };
       }
     );
-    default = [ ];
+    default = { };
   };
 
   config.home.activation.handleExternalSkills = lib.hm.dag.entryAfter [ "writeBoundary" ] (
-    lib.concatMapStringsSep "\n" mkEntryScript config.externalSkills
+    lib.concatMapStringsSep "\n" mkEntryScript (lib.attrValues config.externalSkills)
   );
 }
