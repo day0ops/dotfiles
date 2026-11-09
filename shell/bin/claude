@@ -15,8 +15,10 @@ else
   exit 1
 fi
 
-# Auto-load MCP servers distributed via the dotfiles repo (stow/shared/.claude/mcp-servers.json)
-MCP_CONFIG="$HOME/.claude/mcp-servers.json"
+# Auto-load MCP servers distributed via the dotfiles repo
+# (stow/shared/.claude/mcp-servers.json, or .claude-work when CLAUDE_CONFIG_DIR
+# selects the work profile)
+MCP_CONFIG="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/mcp-servers.json"
 if [ -f "$MCP_CONFIG" ]; then
   exec "$CLAUDE_BINARY" --mcp-config "$MCP_CONFIG" "$@"
 else
