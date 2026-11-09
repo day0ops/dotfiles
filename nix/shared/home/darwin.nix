@@ -83,6 +83,7 @@
       "Workspace.sidebarShowsActivity" = false;
       "Workspace.tabIconTintMode" = "off";
       "Workspace.tabStyle" = "vertical";
+      "Workspace.terminalCopyOnSelect" = true;
       "Workspace.terminalFontPointSize" = 11.0;
       "Workspace.terminalFontSmoothing" = true;
       "Workspace.usesStandardInactiveWindowPaneStyles" = true;

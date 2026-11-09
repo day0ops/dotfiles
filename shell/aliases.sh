@@ -39,6 +39,7 @@ alias mkpl='minikube profile list'
 
 # AI related
 alias c='claude'
+alias cw='CLAUDE_CONFIG_DIR="$HOME/.claude-work" claude' # work profile (see docs/PROJECT.md#claude-work-profile)
 
 # Kubernetes
 alias k="kubectl"
