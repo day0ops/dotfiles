@@ -451,23 +451,31 @@ This switches Claude Code to use `~/.claude-work/` (synced from `stow/shared/.cl
 
 ##### External skills
 
-Skills from other git repos (`nix/shared/home/external-skills.nix`, option `externalSkills`) are cloned to `~/.cache/claude-external-skills/<name>` and `git pull`ed fresh on every rebuild instead of pinned via git submodule, then symlinked via Stow into `~/.claude/skills` and/or `~/.claude-work/skills` per entry:
+Skills from other git repos (`nix/shared/home/external-skills.nix`, option `externalSkills`) are cloned to `~/.cache/claude-external-skills/<name>` and `git pull`ed fresh on every rebuild instead of pinned via git submodule, then symlinked via Stow into `~/.claude/skills` and/or `~/.claude-work/skills` per entry. The option is an attrset keyed by name, so a host-specific config can override just one field (e.g. `localPath`) on an entry whose other fields are defined elsewhere:
 
 ```nix
-externalSkills = [
-  { url = "https://github.com/day0ops/claude-skills.git"; }
-  { url = "https://github.com/emilkowalski/skills.git"; subdir = "skills"; }
-  { url = "https://github.com/your-org/private-skills.git"; autoClone = false; targets = [ "work" ]; }
-];
+externalSkills = {
+  claude-skills.url = "https://github.com/day0ops/claude-skills.git";
+  emilkowalski-skills = {
+    url = "https://github.com/emilkowalski/skills.git";
+    subdir = "skills";
+  };
+  private-skills = {
+    url = "https://github.com/your-org/private-skills.git";
+    autoClone = false;
+    targets = [ "work" ];
+  };
+};
 ```
 
 - `subdir` — path within the repo containing one directory per skill (default `.`)
 - `autoClone` — clone automatically if missing (default `true`; set `false` for private repos that need interactive auth — clone once by hand, it's still auto-updated via `git pull` after that)
+- `localPath` — use an existing local checkout instead of a managed clone, skipping the clone/pull step entirely and linking skills straight from that path (default `null`); handy for actively developing a skills repo, since edits show up without a push/pull round-trip
 - `targets` — which profiles to link into: `"personal"` (`~/.claude/skills`) and/or `"work"` (`~/.claude-work/skills`)
 
 A failed clone/pull/link is a warning, not a failed rebuild — a machine offline or without access to a private repo just keeps whatever's already cached (or skips that entry entirely if nothing's cached yet).
 
-Current entries: [day0ops/claude-skills](https://github.com/day0ops/claude-skills) (personal, both profiles), [emilkowalski/skills](https://github.com/emilkowalski/skills) (third-party design/animation, both profiles), and a private Solo.io-specific repo (`autoClone = false`, work profile only, in `nix/hosts/work/users/kasunt.nix`).
+Current entries: [day0ops/claude-skills](https://github.com/day0ops/claude-skills) (personal, both profiles) and [emilkowalski/skills](https://github.com/emilkowalski/skills) (third-party design/animation, both profiles) in `nix/shared/home/common.nix`; plus, in `nix/hosts/work/users/kasunt.nix`, a private Solo.io-specific repo (`autoClone = false`, work profile only) and a `localPath` override on both repos pointing at local dev checkouts under `~/Projects`.
 
 ```sh
 # you can import mcp servers from claude desktop, into ~/.claude.json
